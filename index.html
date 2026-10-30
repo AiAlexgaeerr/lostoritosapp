@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" class="dark scroll-smooth">
 <head>
+  <link rel="manifest" href="manifest.json">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#060609" />
@@ -509,21 +510,18 @@
             <h3 class="font-display text-3xl sm:text-4xl uppercase tracking-wider text-white leading-none mt-0.5 flex items-center gap-2">
               <i class="fa-solid fa-trophy text-toro-gold text-2xl"></i> Ranking Los Toritos
             </h3>
-            <p class="text-xs text-zinc-400 mt-1">Puntuación de Nivel: <strong class="text-toro-gold">MVP = 3 pts</strong> • <strong class="text-toro-bright">Gol = 1 pt</strong> • <strong class="text-amber-300">⭐ Nota Media × 1.5</strong></p>
+            <p class="text-xs text-zinc-400 mt-1">Puntuación de Nivel para equilibrar equipos: <strong class="text-toro-gold">MVP = 3 pts</strong> • <strong class="text-toro-bright">Gol = 1 pt</strong></p>
           </div>
 
-          <div class="inline-flex flex-wrap p-1 rounded-2xl bg-toro-black border border-zinc-800 self-start gap-1">
-            <button type="button" onclick="setRankingSort('pts')" id="rank-filter-pts" class="px-3 py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white transition-all shadow">
+          <div class="inline-flex p-1 rounded-2xl bg-toro-black border border-zinc-800 self-start">
+            <button type="button" onclick="setRankingSort('pts')" id="rank-filter-pts" class="px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white transition-all shadow">
               Nivel General
             </button>
-            <button type="button" onclick="setRankingSort('goals')" id="rank-filter-goals" class="px-3 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
+            <button type="button" onclick="setRankingSort('goals')" id="rank-filter-goals" class="px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
               ⚽ Pichichi
             </button>
-            <button type="button" onclick="setRankingSort('mvps')" id="rank-filter-mvps" class="px-3 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
+            <button type="button" onclick="setRankingSort('mvps')" id="rank-filter-mvps" class="px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
               👑 MVPs
-            </button>
-            <button type="button" onclick="setRankingSort('rating')" id="rank-filter-rating" class="px-3 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
-              ⭐ Nota Media
             </button>
           </div>
         </div>
@@ -533,12 +531,11 @@
 
         <!-- Tabla de Clasificación -->
         <div class="card-toro rounded-3xl overflow-hidden border border-zinc-800">
-          <div class="grid grid-cols-12 items-center px-3 sm:px-4 py-3.5 bg-toro-black/90 border-b border-zinc-800 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-zinc-400">
+          <div class="grid grid-cols-12 items-center px-4 py-3.5 bg-toro-black/90 border-b border-zinc-800 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-zinc-400">
             <div class="col-span-1">#</div>
-            <div class="col-span-4">Jugador</div>
+            <div class="col-span-5">Jugador</div>
             <div class="col-span-2 text-center">⚽ Goles</div>
             <div class="col-span-2 text-center">👑 MVPs</div>
-            <div class="col-span-1 text-center">⭐ Media</div>
             <div class="col-span-2 text-right">Nivel</div>
           </div>
           <div id="ranking-table-body" class="divide-y divide-zinc-800/60"></div>
@@ -681,7 +678,207 @@
       </section>
 
       <!-- ==========================================
-       MODAL: CENTRO DE PARTIDO (EQUIPOS, GOLES, MVP, NOTAS)
+           SECCIÓN 4: HISTORIAL DE PARTIDOS
+           ========================================== -->
+      <section id="section-historial" class="hidden space-y-4">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-toro-bright">Archivo Oficial del Club</span>
+          <h3 class="font-display text-3xl sm:text-4xl uppercase tracking-wider text-white leading-none mt-0.5">
+            Historial de Resultados
+          </h3>
+          <p class="text-xs text-zinc-400 mt-1">Toca cualquier acta de partido para consultar los goleadores, equipos y el ganador del MVP</p>
+        </div>
+
+        <div id="history-matches-list" class="space-y-3.5"></div>
+      </section>
+
+      <!-- ==========================================
+           SECCIÓN 5: PLANTILLA DE LOS TORITOS & ADMIN
+           ========================================== -->
+      <section id="section-plantilla" class="hidden space-y-6">
+        <!-- Panel exclusivo de Aprobación para alexgaeerr -->
+        <div id="admin-approval-panel" class="hidden card-toro rounded-3xl p-5 border border-toro-red/60">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-toro-bright">Panel de Control Admin</span>
+              <h4 class="font-display text-2xl uppercase text-white flex items-center gap-2 leading-none mt-0.5">
+                <i class="fa-solid fa-user-shield text-toro-red"></i> Solicitudes de Admisión
+              </h4>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-toro-red/20 text-toro-bright text-[11px] font-bold">Admin: alexgaeerr</span>
+          </div>
+          <div id="pending-users-list" class="space-y-2.5"></div>
+        </div>
+
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-toro-bright">Cartas Oficiales</span>
+          <h3 class="font-display text-3xl sm:text-4xl uppercase tracking-wider text-white leading-none mt-0.5 mb-1">
+            Plantilla Los Toritos FC
+          </h3>
+          <p class="text-xs text-zinc-400 mb-4">Media OVR calculada automáticamente en base a goles marcados, MVPs y partidos jugados</p>
+          <div id="squad-members-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECCIÓN 6: MI PERFIL
+           ========================================== -->
+      <section id="section-perfil" class="hidden">
+        <div class="card-toro rounded-3xl p-6 sm:p-7 max-w-md mx-auto border border-zinc-800">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-zinc-400">Ajustes de Jugador</span>
+              <h3 class="font-display text-3xl uppercase text-white leading-none">Mi Perfil</h3>
+            </div>
+            <span id="profile-role-badge" class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase bg-toro-red/20 text-toro-bright border border-toro-red/40">Miembro</span>
+          </div>
+
+          <form onsubmit="handleUpdateProfile(event)" class="space-y-5">
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative">
+                <div id="edit-avatar-preview" class="w-24 h-24 rounded-full bg-toro-black border-2 border-toro-red overflow-hidden flex items-center justify-center shadow-xl"></div>
+                <label class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-toro-red hover:bg-toro-bright text-white flex items-center justify-center cursor-pointer shadow-lg border-2 border-toro-black">
+                  <i class="fa-solid fa-camera text-xs"></i>
+                  <input type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(event, 'edit')" />
+                </label>
+              </div>
+              <div class="flex gap-2" id="edit-preset-avatars"></div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Nombre de Usuario</label>
+              <input type="text" id="edit-username" required class="w-full bg-toro-black border border-zinc-800 focus:border-toro-red rounded-xl px-3.5 py-3 text-sm text-white outline-none" />
+            </div>
+
+            <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
+              <button type="submit" class="btn-toro flex-1 py-3.5 rounded-xl bg-gradient-to-r from-toro-red to-toro-bright text-white font-extrabold text-xs uppercase tracking-wider">
+                Guardar Cambios
+              </button>
+              <button type="button" onclick="handleLogout()" class="px-5 py-3.5 rounded-xl bg-zinc-900 hover:bg-rose-950/60 border border-zinc-800 hover:border-rose-500/40 text-zinc-300 hover:text-rose-200 font-bold text-xs uppercase transition-colors">
+                Cerrar Sesión
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BARRA DE NAVEGACIÓN INFERIOR PRO -->
+    <nav class="fixed bottom-0 inset-x-0 z-40 glass-nav border-t border-zinc-800/90 px-2 py-1.5">
+      <div class="max-w-lg mx-auto grid grid-cols-6 gap-1">
+        <button onclick="switchSection('partidos')" id="nav-btn-partidos" class="flex flex-col items-center justify-center py-1.5 rounded-2xl text-toro-bright bg-toro-red/15 transition-all">
+          <i class="fa-solid fa-futbol text-sm"></i>
+          <span class="text-[9px] font-extrabold uppercase tracking-tight mt-0.5">Partidos</span>
+        </button>
+        <button onclick="switchSection('ranking')" id="nav-btn-ranking" class="flex flex-col items-center justify-center py-1.5 rounded-2xl text-zinc-400 hover:text-white transition-all">
+          <i class="fa-solid fa-trophy text-sm"></i>
+          <span class="text-[9px] font-bold uppercase tracking-tight mt-0.5">Ranking</span>
+        </button>
+        <button onclick="switchSection('fantasy')" id="nav-btn-fantasy" class="flex flex-col items-center justify-center py-1.5 rounded-2xl text-zinc-400 hover:text-white transition-all">
+          <i class="fa-solid fa-shirt text-sm text-emerald-400"></i>
+          <span class="text-[9px] font-bold uppercase tracking-tight mt-0.5">Fantasy</span>
+        </button>
+        <button onclick="switchSection('historial')" id="nav-btn-historial" class="flex flex-col items-center justify-center py-1.5 rounded-2xl text-zinc-400 hover:text-white transition-all">
+          <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+          <span class="text-[9px] font-bold uppercase tracking-tight mt-0.5">Historial</span>
+        </button>
+        <button onclick="switchSection('plantilla')" id="nav-btn-plantilla" class="relative flex flex-col items-center justify-center py-1.5 rounded-2xl text-zinc-400 hover:text-white transition-all">
+          <i class="fa-solid fa-users text-sm"></i>
+          <span class="text-[9px] font-bold uppercase tracking-tight mt-0.5">Club</span>
+          <span id="nav-pending-dot" class="hidden absolute top-1 right-3 w-2 h-2 rounded-full bg-toro-bright animate-ping"></span>
+        </button>
+        <button onclick="switchSection('perfil')" id="nav-btn-perfil" class="flex flex-col items-center justify-center py-1.5 rounded-2xl text-zinc-400 hover:text-white transition-all">
+          <i class="fa-solid fa-user text-sm"></i>
+          <span class="text-[9px] font-bold uppercase tracking-tight mt-0.5">Perfil</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Botón Flotante Volver Arriba -->
+  <button id="back-to-top-btn" onclick="scrollToTop()" aria-label="Volver arriba" class="fixed bottom-20 right-4 z-40 w-10 h-10 rounded-2xl bg-toro-red text-white shadow-xl border border-toro-bright flex items-center justify-center opacity-0 translate-y-10 pointer-events-none transition-all duration-300">
+    <i class="fa-solid fa-chevron-up text-xs"></i>
+  </button>
+
+  <!-- ==========================================
+       MODAL: MERCADO DE FICHAJES FANTASY
+       ========================================== -->
+  <div id="fantasy-selector-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="card-toro w-full max-w-md rounded-3xl p-5 border border-emerald-500/40 shadow-2xl max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-3 shrink-0">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-400">Toritos Fantasy Draft</span>
+          <h3 id="fantasy-modal-title" class="font-display text-2xl uppercase text-white leading-none mt-0.5">Elegir Jugador</h3>
+        </div>
+        <button onclick="closeFantasySelector()" class="w-8 h-8 rounded-full bg-zinc-900 text-zinc-400 hover:text-white flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="fantasy-modal-rule-note" class="mb-3 px-3 py-2 rounded-xl bg-toro-black border border-zinc-800 text-[11px] text-zinc-300 shrink-0"></div>
+      <div id="fantasy-candidates-list" class="space-y-2.5 overflow-y-auto flex-1 pr-1"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: PROGRAMAR NUEVA PACHANGA
+       ========================================== -->
+  <div id="create-match-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="card-toro w-full max-w-sm rounded-3xl p-6 border border-toro-red/40 shadow-2xl">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-toro-bright">Nueva Convocatoria</span>
+          <h3 class="font-display text-3xl uppercase text-white leading-none">Programar Pachanga</h3>
+        </div>
+        <button onclick="closeCreateMatchModal()" class="w-8 h-8 rounded-full bg-zinc-900 text-zinc-400 hover:text-white flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateMatch(event)" class="space-y-4">
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1.5">Campo / Lugar del Partido</label>
+          <input type="text" id="match-location" required placeholder="Ej: Polideportivo / Calle Alcalá" class="w-full bg-toro-black border border-zinc-800 focus:border-toro-red rounded-xl px-3.5 py-2.5 text-sm text-white outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1.5">Fecha</label>
+            <input type="date" id="match-date" required class="w-full bg-toro-black border border-zinc-800 focus:border-toro-red rounded-xl px-3 py-2.5 text-sm text-white outline-none" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1.5">Hora</label>
+            <input type="time" id="match-time" required value="18:00" class="w-full bg-toro-black border border-zinc-800 focus:border-toro-red rounded-xl px-3 py-2.5 text-sm text-white outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-2">¿Vas a jugar este partido?</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <label class="cursor-pointer">
+              <input type="radio" name="creator-attendance" value="going" checked class="peer hidden" />
+              <div class="p-3 rounded-xl border border-zinc-800 bg-toro-black peer-checked:border-emerald-500 peer-checked:bg-emerald-500/15 text-center transition-all">
+                <span class="text-xs font-extrabold text-white">✅ Sí, Jugaré</span>
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="creator-attendance" value="not_going" class="peer hidden" />
+              <div class="p-3 rounded-xl border border-zinc-800 bg-toro-black peer-checked:border-rose-500 peer-checked:bg-rose-500/15 text-center transition-all">
+                <span class="text-xs font-extrabold text-white">❌ Causa Baja</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-toro w-full py-3.5 rounded-xl bg-gradient-to-r from-toro-red to-toro-bright text-white font-extrabold text-xs uppercase tracking-wider">
+          Publicar Convocatoria
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: CENTRO DE PARTIDO (EQUIPOS, GOLES, MVP)
        ========================================== -->
   <div id="match-detail-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
     <div class="card-toro w-full max-w-2xl rounded-3xl border border-zinc-800 shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
@@ -704,18 +901,15 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 bg-toro-black border-b border-zinc-800 p-1.5 gap-1.5 shrink-0">
-        <button onclick="switchMatchSubTab('equipos')" id="subtab-btn-equipos" class="py-2 rounded-xl text-[11px] sm:text-xs font-extrabold uppercase bg-toro-red text-white">
+      <div class="grid grid-cols-3 bg-toro-black border-b border-zinc-800 p-1.5 gap-1.5 shrink-0">
+        <button onclick="switchMatchSubTab('equipos')" id="subtab-btn-equipos" class="py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white">
           Equipos
         </button>
-        <button onclick="switchMatchSubTab('goles')" id="subtab-btn-goles" class="py-2 rounded-xl text-[11px] sm:text-xs font-extrabold uppercase text-zinc-400 hover:text-white">
+        <button onclick="switchMatchSubTab('goles')" id="subtab-btn-goles" class="py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white">
           Marcador y Goles
         </button>
-        <button onclick="switchMatchSubTab('mvp')" id="subtab-btn-mvp" class="py-2 rounded-xl text-[11px] sm:text-xs font-extrabold uppercase text-zinc-400 hover:text-white">
+        <button onclick="switchMatchSubTab('mvp')" id="subtab-btn-mvp" class="py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white">
           Votar MVP (24h)
-        </button>
-        <button onclick="switchMatchSubTab('notas')" id="subtab-btn-notas" class="py-2 rounded-xl text-[11px] sm:text-xs font-extrabold uppercase text-zinc-400 hover:text-white">
-          ⭐ Notas (30m)
         </button>
       </div>
 
@@ -878,8 +1072,7 @@
       activeMatchId: null,
       activeMatchSubTab: 'equipos',
       pendingDeleteMatchId: null,
-      activeFantasyPosition: null,
-      draftRatings: {}
+      activeFantasyPosition: null
     };
 
     // ==========================================
@@ -1365,14 +1558,6 @@
             }
           }
         });
-
-        // Mostrar el banner de Programar Pachanga ÚNICAMENTE en la pestaña de Partidos
-        const heroBanner = document.getElementById('hero-banner');
-        if (heroBanner) {
-          if (sectionName === 'partidos') heroBanner.classList.remove('hidden');
-          else heroBanner.classList.add('hidden');
-        }
-
         renderAllSections();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
@@ -1383,88 +1568,8 @@
     };
 
     // ==========================================
-    // CÁLCULO DE ESTADÍSTICAS, MVP, NOTAS (30 MIN) Y FANTASY
+    // CÁLCULO DE ESTADÍSTICAS, MVP Y FANTASY
     // ==========================================
-    function getMatchStartTimestamp(match) {
-      if (!match || !match.date) return 0;
-      const timePart = match.time || '18:00';
-      const ms = new Date(`${match.date}T${timePart}:00`).getTime();
-      return isNaN(ms) ? 0 : ms;
-    }
-
-    // Se habilita 30 minutos después de la hora de inicio del partido
-    function isPlayerRatingsOpen(match) {
-      const startMs = getMatchStartTimestamp(match);
-      if (!startMs) return false;
-      const openTimeMs = startMs + 30 * 60 * 1000;
-      return Date.now() >= openTimeMs;
-    }
-
-    function getPlayerRatingsOpenRemaining(match) {
-      const startMs = getMatchStartTimestamp(match);
-      if (!startMs) return '';
-      const openTimeMs = startMs + 30 * 60 * 1000;
-      const diff = openTimeMs - Date.now();
-      if (diff <= 0) return 'Notas abiertas';
-      const totalMins = Math.ceil(diff / (1000 * 60));
-      const days = Math.floor(totalMins / (60 * 24));
-      const hours = Math.floor((totalMins % (60 * 24)) / 60);
-      const mins = totalMins % 60;
-      if (days > 0) return `Abre en ${days}d ${hours}h`;
-      if (hours > 0) return `Abre en ${hours}h ${mins}m`;
-      return `Abre en ${mins} min`;
-    }
-
-    function computeMatchPlayerRatingsSummary(match) {
-      const attendance = (match && match.attendance) || {};
-      const ratingsObj = (match && match.playerRatings) || {};
-
-      // Miembros registrados del club que asistieron al partido (tienen derecho a votar)
-      const eligibleVoterIds = Object.entries(attendance)
-        .filter(([uid, st]) => st === 'going' && state.users.some(u => u.id === uid && (u.approved || u.isAdmin)))
-        .map(([uid]) => uid);
-
-      let votedCount = 0;
-      eligibleVoterIds.forEach(voterId => {
-        if (ratingsObj[voterId] && Object.keys(ratingsObj[voterId]).length > 0) {
-          votedCount += 1;
-        }
-      });
-
-      const totalVoters = eligibleVoterIds.length;
-      const allVoted = totalVoters > 0 && votedCount >= totalVoters;
-
-      // Calcular media de cada jugador en este partido
-      const sums = {};
-      const counts = {};
-      Object.values(ratingsObj).forEach(voterMap => {
-        if (!voterMap || typeof voterMap !== 'object') return;
-        Object.entries(voterMap).forEach(([targetId, val]) => {
-          const num = parseFloat(val);
-          if (!isNaN(num) && num >= 1 && num <= 10) {
-            sums[targetId] = (sums[targetId] || 0) + num;
-            counts[targetId] = (counts[targetId] || 0) + 1;
-          }
-        });
-      });
-
-      const playerAverages = {};
-      Object.keys(sums).forEach(pid => {
-        playerAverages[pid] = {
-          avg: Number((sums[pid] / counts[pid]).toFixed(1)),
-          count: counts[pid]
-        };
-      });
-
-      return {
-        eligibleVoterIds,
-        votedCount,
-        totalVoters,
-        allVoted,
-        playerAverages
-      };
-    }
-
     function isMvpVotingClosed(match) {
       if (!match || !match.date) return false;
       const timePart = match.time || '18:00';
@@ -1518,9 +1623,6 @@
           goals: 0,
           mvps: 0,
           matchesPlayed: 0,
-          ratingSum: 0,
-          ratingCount: 0,
-          avgRating: 0,
           points: 0
         };
       });
@@ -1529,7 +1631,6 @@
         const attendance = m.attendance || {};
         const goals = m.goals || {};
         const guests = m.guests || [];
-        const ratingsObj = m.playerRatings || {};
 
         guests.forEach(g => {
           if (!statsMap[g.id]) {
@@ -1541,9 +1642,6 @@
               goals: 0,
               mvps: 0,
               matchesPlayed: 0,
-              ratingSum: 0,
-              ratingCount: 0,
-              avgRating: 0,
               points: 0
             };
           }
@@ -1570,24 +1668,10 @@
         if (winnerId && statsMap[winnerId]) {
           statsMap[winnerId].mvps += 1;
         }
-
-        // Acumular las notas individuales recibidas en cada pachanga
-        Object.values(ratingsObj).forEach(voterMap => {
-          if (!voterMap || typeof voterMap !== 'object') return;
-          Object.entries(voterMap).forEach(([targetPid, scoreVal]) => {
-            const numScore = parseFloat(scoreVal);
-            if (!isNaN(numScore) && numScore >= 1 && numScore <= 10 && statsMap[targetPid]) {
-              statsMap[targetPid].ratingSum += numScore;
-              statsMap[targetPid].ratingCount += 1;
-            }
-          });
-        });
       });
 
       Object.values(statsMap).forEach(st => {
-        st.avgRating = st.ratingCount > 0 ? Number((st.ratingSum / st.ratingCount).toFixed(1)) : 0;
-        const ratingBonus = st.avgRating > 0 ? Math.round(st.avgRating * 1.5) : 0;
-        st.points = st.mvps * 3 + st.goals * 1 + ratingBonus;
+        st.points = st.mvps * 3 + st.goals * 1;
       });
 
       return statsMap;
@@ -1933,13 +2017,6 @@
       const approvedUsers = state.users.filter(u => u.approved || u.isAdmin);
       const pendingUsers = state.users.filter(u => !u.approved && !u.isAdmin);
 
-      // Asegurar que el Hero Banner de Programar Pachanga solo sea visible en la pestaña Partidos
-      const heroBanner = document.getElementById('hero-banner');
-      if (heroBanner) {
-        if (state.activeSection === 'partidos') heroBanner.classList.remove('hidden');
-        else heroBanner.classList.add('hidden');
-      }
-
       // Header User Info
       const headerAv = document.getElementById('header-user-avatar');
       const headerName = document.getElementById('header-user-name');
@@ -2100,8 +2177,6 @@
         const mvpId = getMatchMvpWinnerId(m);
         const mvpInfo = mvpId ? getPlayerDisplayInfo(mvpId, m) : null;
         const mvpClosed = isMvpVotingClosed(m);
-        const ratingsOpen = isPlayerRatingsOpen(m);
-        const ratingsSummary = computeMatchPlayerRatingsSummary(m);
 
         return `
           <div class="card-toro rounded-3xl p-5 border border-zinc-800/90 space-y-4">
@@ -2116,9 +2191,6 @@
                   </span>
                   <span class="px-2.5 py-0.5 rounded-full ${mvpClosed ? 'bg-amber-500/15 border-amber-500/40 text-amber-300' : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'} border text-[10px] font-bold">
                     👑 ${mvpClosed ? 'MVP Cerrado' : getMatchMvpCloseRemaining(m)}
-                  </span>
-                  <span class="px-2.5 py-0.5 rounded-full ${ratingsSummary.allVoted ? 'bg-amber-500/20 border-amber-400 text-amber-300' : ratingsOpen ? 'bg-sky-500/15 border-sky-500/40 text-sky-300' : 'bg-zinc-900 border-zinc-700 text-zinc-400'} border text-[10px] font-bold">
-                    ⭐ ${ratingsSummary.allVoted ? 'Notas Cerradas' : ratingsOpen ? `Notas Abiertas (${ratingsSummary.votedCount}/${ratingsSummary.totalVoters})` : getPlayerRatingsOpenRemaining(m)}
                   </span>
                 </div>
                 <h4 class="font-display text-3xl uppercase text-white leading-none">${escapeHtml(m.location)}</h4>
@@ -2160,7 +2232,7 @@
                   </div>
                 ` : ''}
                 <button onclick="openMatchDetailModal('${m.id}')" class="btn-toro flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-gradient-to-r from-toro-red to-toro-bright text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-people-group"></i> Equipos, Goles, MVP y Notas
+                  <i class="fa-solid fa-people-group"></i> Equipos, Goles y MVP
                 </button>
               </div>
             </div>
@@ -2216,7 +2288,6 @@
         scoreColor: 0,
         scoreBlanco: 0,
         mvpVotes: {},
-        playerRatings: {},
         lastModifiedBy: `${current.username} (Creó el partido)`
       };
 
@@ -2361,14 +2432,14 @@
     };
 
     function updateMatchSubTabButtons() {
-      const tabs = ['equipos', 'goles', 'mvp', 'notas'];
+      const tabs = ['equipos', 'goles', 'mvp'];
       tabs.forEach(t => {
         const btn = document.getElementById(`subtab-btn-${t}`);
         if (!btn) return;
         if (t === state.activeMatchSubTab) {
-          btn.className = 'py-2 rounded-xl text-[11px] sm:text-xs font-extrabold uppercase bg-toro-red text-white shadow';
+          btn.className = 'py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white shadow';
         } else {
-          btn.className = 'py-2 rounded-xl text-[11px] sm:text-xs font-extrabold uppercase text-zinc-400 hover:text-white';
+          btn.className = 'py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white';
         }
       });
     }
@@ -2628,145 +2699,8 @@
             }).join('')}
           </div>
         `;
-      } else if (state.activeMatchSubTab === 'notas') {
-        const current = getCurrentProfile();
-        const openNow = isPlayerRatingsOpen(match);
-        const summary = computeMatchPlayerRatingsSummary(match);
-        const existingMyRatings = (current && match.playerRatings && match.playerRatings[current.id]) || {};
-
-        // Inicializar borrador de notas con las ya guardadas por el usuario
-        if (!state.draftRatings[match.id]) {
-          state.draftRatings[match.id] = { ...existingMyRatings };
-        }
-        const currentDraft = state.draftRatings[match.id];
-
-        if (!openNow) {
-          body.innerHTML = `
-            <div class="p-6 rounded-3xl bg-toro-black border border-zinc-800 text-center space-y-3">
-              <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 mx-auto flex items-center justify-center">
-                <i class="fa-solid fa-hourglass-half text-2xl animate-pulse"></i>
-              </div>
-              <span class="px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-[10px] font-extrabold uppercase tracking-wider inline-block">
-                ⏳ Evaluación Pospartido Bloqueada
-              </span>
-              <h4 class="font-display text-3xl uppercase text-white">Se habilita 30 min después del inicio</h4>
-              <p class="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">
-                Podrás poner nota del <strong>1 al 10</strong> a cada jugador cuando se cumplan 30 minutos desde el inicio programado de la pachanga (${escapeHtml(match.time || '18:00')}h).
-              </p>
-              <div class="pt-2">
-                <span class="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700 font-display text-2xl text-toro-bright uppercase tracking-wider">
-                  ${getPlayerRatingsOpenRemaining(match)}
-                </span>
-              </div>
-            </div>
-          `;
-        } else {
-          const progressPct = summary.totalVoters > 0 ? Math.min(100, Math.round((summary.votedCount / summary.totalVoters) * 100)) : 0;
-          const hasUserSavedRatings = Object.keys(existingMyRatings).length > 0;
-
-          body.innerHTML = `
-            <div class="p-4 rounded-2xl ${summary.allVoted ? 'bg-amber-500/15 border-amber-400/60' : 'bg-sky-500/10 border-sky-500/40'} border space-y-3">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                  <span class="text-[10px] font-extrabold uppercase tracking-wider ${summary.allVoted ? 'text-amber-300' : 'text-sky-300'}">
-                    ${summary.allVoted ? '✅ ¡Todos los jugadores han votado! Media Oficial Cerrada' : '⭐ Evaluación Individual Abierta (Escala 1 - 10)'}
-                  </span>
-                  <h4 class="font-display text-2xl uppercase text-white mt-0.5">
-                    Notas del Partido &amp; Media Oficial
-                  </h4>
-                </div>
-                <span class="px-3 py-1 rounded-xl bg-toro-black border border-zinc-800 text-xs font-extrabold text-white self-start sm:self-center">
-                  Han votado: ${summary.votedCount} / ${summary.totalVoters}
-                </span>
-              </div>
-
-              <div class="w-full h-2 bg-toro-black rounded-full overflow-hidden border border-zinc-800">
-                <div class="h-full ${summary.allVoted ? 'bg-gradient-to-r from-amber-400 to-emerald-400' : 'bg-gradient-to-r from-toro-red to-sky-400'} transition-all duration-500" style="width: ${progressPct}%"></div>
-              </div>
-            </div>
-
-            <div class="space-y-3">
-              ${attendees.length === 0 ? `<p class="text-xs text-zinc-500">No hay asistentes registrados en este partido.</p>` : attendees.map(p => {
-                const avgObj = summary.playerAverages[p.id];
-                const myScore = currentDraft[p.id] !== undefined ? Number(currentDraft[p.id]) : (existingMyRatings[p.id] !== undefined ? Number(existingMyRatings[p.id]) : null);
-
-                return `
-                  <div class="p-3.5 rounded-2xl bg-toro-black border border-zinc-800 space-y-2.5">
-                    <div class="flex items-center justify-between gap-2">
-                      <div class="flex items-center gap-2.5 min-w-0">
-                        <img src="${p.avatar}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-amber-500/40 shrink-0" />
-                        <div class="min-w-0">
-                          <span class="text-xs font-extrabold text-white block truncate">${escapeHtml(p.name)}</span>
-                          <span class="text-[10px] text-zinc-400">
-                            ${avgObj ? `Media actual: <strong class="text-amber-300">⭐ ${avgObj.avg}</strong> (${avgObj.count} ${avgObj.count === 1 ? 'voto' : 'votos'})` : 'Sin notas aún'}
-                          </span>
-                        </div>
-                      </div>
-                      <span class="px-2.5 py-1 rounded-xl ${myScore ? 'bg-amber-500/20 border-amber-400/50 text-amber-300' : 'bg-zinc-900 border-zinc-800 text-zinc-500'} border text-xs font-extrabold tabular-nums shrink-0">
-                        Tu nota: ${myScore ? myScore : '-'}
-                      </span>
-                    </div>
-
-                    <!-- Botonera rápida del 1 al 10 -->
-                    <div class="grid grid-cols-10 gap-1 pt-1">
-                      ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => {
-                        const active = myScore === num;
-                        return `
-                          <button type="button" onclick="selectDraftRating('${match.id}', '${p.id}', ${num})" class="py-1.5 rounded-lg text-[11px] font-extrabold transition-all border ${active ? 'bg-toro-red border-toro-bright text-white scale-105 shadow' : 'bg-zinc-900/90 hover:bg-zinc-800 border-zinc-800 text-zinc-300'}">
-                            ${num}
-                          </button>
-                        `;
-                      }).join('')}
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-
-            ${attendees.length > 0 ? `
-              <button type="button" onclick="saveMyMatchRatings('${match.id}')" class="btn-toro w-full py-3.5 rounded-2xl bg-gradient-to-r from-toro-red to-toro-bright text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-toro-red/30">
-                <i class="fa-solid fa-star mr-1.5"></i> ${hasUserSavedRatings ? 'Actualizar Mis Notas del Partido' : 'Guardar Mis Notas del Partido'}
-              </button>
-            ` : ''}
-          `;
-        }
       }
     }
-
-    window.selectDraftRating = function(matchId, targetPlayerId, score) {
-      if (!state.draftRatings[matchId]) {
-        const current = getCurrentProfile();
-        const match = state.matches.find(m => m.id === matchId);
-        const saved = (current && match && match.playerRatings && match.playerRatings[current.id]) || {};
-        state.draftRatings[matchId] = { ...saved };
-      }
-      state.draftRatings[matchId][targetPlayerId] = score;
-      const match = state.matches.find(m => m.id === matchId);
-      if (match) renderMatchDetailContent(match);
-    };
-
-    window.saveMyMatchRatings = async function(matchId) {
-      const current = getCurrentProfile();
-      const match = state.matches.find(m => m.id === matchId);
-      if (!current || !match) return;
-
-      if (!isPlayerRatingsOpen(match)) {
-        showToast('Las notas individuales se habilitan 30 minutos después del inicio del partido', 'error');
-        return;
-      }
-
-      const draft = state.draftRatings[matchId] || {};
-      if (Object.keys(draft).length === 0) {
-        showToast('Selecciona al menos una nota del 1 al 10 antes de guardar', 'error');
-        return;
-      }
-
-      match.playerRatings = match.playerRatings || {};
-      match.playerRatings[current.id] = { ...(match.playerRatings[current.id] || {}), ...draft };
-
-      await saveMatchRecord(match);
-      showToast('¡Tus notas del partido se han guardado y sumado al Ranking! ⭐', 'success');
-    };
 
     window.handleAddGuest = async function(event, matchId) {
       event.preventDefault();
@@ -2957,13 +2891,13 @@
     // ==========================================
     window.setRankingSort = function(sortBy) {
       state.rankingSortBy = sortBy;
-      ['pts', 'goals', 'mvps', 'rating'].forEach(k => {
+      ['pts', 'goals', 'mvps'].forEach(k => {
         const btn = document.getElementById(`rank-filter-${k}`);
         if (!btn) return;
         if (k === sortBy) {
-          btn.className = 'px-3 py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white transition-all shadow';
+          btn.className = 'px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white transition-all shadow';
         } else {
-          btn.className = 'px-3 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all';
+          btn.className = 'px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all';
         }
       });
       renderRankingSection();
@@ -2980,8 +2914,7 @@
       playersList.sort((a, b) => {
         if (state.rankingSortBy === 'goals') return b.goals - a.goals || b.points - a.points;
         if (state.rankingSortBy === 'mvps') return b.mvps - a.mvps || b.points - a.points;
-        if (state.rankingSortBy === 'rating') return b.avgRating - a.avgRating || b.points - a.points;
-        return b.points - a.points || b.avgRating - a.avgRating || b.goals - a.goals;
+        return b.points - a.points || b.goals - a.goals;
       });
 
       const top3 = [playersList[1], playersList[0], playersList[2]];
@@ -3001,7 +2934,7 @@
             <span class="text-xl mb-1">${cfg.medal}</span>
             <img src="${p.avatar}" alt="${escapeHtml(p.name)}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-toro-red mb-2 shadow-lg" />
             <span class="text-xs font-extrabold text-white truncate max-w-full">${escapeHtml(p.name)}</span>
-            <span class="text-[10px] text-zinc-400 mt-0.5">⚽ ${p.goals} • 👑 ${p.mvps} • ⭐ ${p.avgRating > 0 ? p.avgRating : '-'}</span>
+            <span class="text-[10px] text-zinc-400 mt-0.5">⚽ ${p.goals} • 👑 ${p.mvps}</span>
             <span class="mt-2 px-2.5 py-0.5 rounded-full bg-toro-red/20 border border-toro-red/40 text-toro-bright text-[10px] font-extrabold tabular-nums">
               ${p.points} PTS
             </span>
@@ -3010,15 +2943,14 @@
       }).join('');
 
       tableBody.innerHTML = playersList.map((p, idx) => `
-        <div class="grid grid-cols-12 items-center px-3 sm:px-4 py-3 hover:bg-white/[0.02] transition-colors">
+        <div class="grid grid-cols-12 items-center px-4 py-3 hover:bg-white/[0.02] transition-colors">
           <div class="col-span-1 font-extrabold text-xs text-zinc-400">${idx + 1}</div>
-          <div class="col-span-4 flex items-center gap-2 min-w-0">
+          <div class="col-span-5 flex items-center gap-2.5 min-w-0">
             <img src="${p.avatar}" alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-zinc-700 shrink-0" />
             <span class="text-xs font-extrabold text-white truncate">${escapeHtml(p.name)}</span>
           </div>
           <div class="col-span-2 text-center font-bold text-xs text-emerald-400 tabular-nums">${p.goals}</div>
           <div class="col-span-2 text-center font-bold text-xs text-amber-300 tabular-nums">${p.mvps}</div>
-          <div class="col-span-1 text-center font-extrabold text-xs text-sky-300 tabular-nums">${p.avgRating > 0 ? p.avgRating : '-'}</div>
           <div class="col-span-2 text-right font-extrabold text-xs text-toro-bright tabular-nums">${p.points} pts</div>
         </div>
       `).join('');
@@ -3129,9 +3061,8 @@
       const statsMap = computeAllPlayersStats();
 
       squadGrid.innerHTML = approvedUsers.map(u => {
-        const st = statsMap[u.id] || { goals: 0, mvps: 0, matchesPlayed: 0, avgRating: 0, points: 0 };
-        const ratingBoost = st.avgRating > 0 ? Math.round(st.avgRating) : 0;
-        const ovr = Math.min(99, 72 + st.goals * 2 + st.mvps * 4 + st.matchesPlayed + ratingBoost);
+        const st = statsMap[u.id] || { goals: 0, mvps: 0, matchesPlayed: 0, points: 0 };
+        const ovr = Math.min(99, 75 + st.goals * 2 + st.mvps * 4 + st.matchesPlayed);
         return `
           <div class="fut-card rounded-3xl p-4 flex items-center gap-4">
             <div class="text-center shrink-0">
@@ -3144,22 +3075,18 @@
                 <h4 class="font-display text-2xl uppercase text-white truncate leading-none">${escapeHtml(u.username)}</h4>
                 ${u.isAdmin ? `<span class="px-2 py-0.5 rounded bg-toro-red/25 text-toro-bright text-[9px] font-extrabold uppercase">Admin</span>` : ''}
               </div>
-              <div class="grid grid-cols-4 gap-1.5 mt-3 pt-2.5 border-t border-white/10 text-center">
+              <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-white/10 text-center">
                 <div>
-                  <span class="block text-[8px] font-bold uppercase text-zinc-400">Partidos</span>
+                  <span class="block text-[9px] font-bold uppercase text-zinc-400">Partidos</span>
                   <span class="font-display text-xl text-white">${st.matchesPlayed}</span>
                 </div>
                 <div>
-                  <span class="block text-[8px] font-bold uppercase text-zinc-400">Goles</span>
+                  <span class="block text-[9px] font-bold uppercase text-zinc-400">Goles</span>
                   <span class="font-display text-xl text-emerald-400">${st.goals}</span>
                 </div>
                 <div>
-                  <span class="block text-[8px] font-bold uppercase text-zinc-400">MVPs</span>
+                  <span class="block text-[9px] font-bold uppercase text-zinc-400">MVPs</span>
                   <span class="font-display text-xl text-amber-300">${st.mvps}</span>
-                </div>
-                <div>
-                  <span class="block text-[8px] font-bold uppercase text-zinc-400">Media</span>
-                  <span class="font-display text-xl text-sky-300">${st.avgRating > 0 ? st.avgRating : '-'}</span>
                 </div>
               </div>
             </div>
@@ -3309,18 +3236,11 @@
 
     window.onload = function() {
       initApp();
-      // Actualizar cada 30 segundos los contadores en vivo (MVP 24h, Notas 30m y Cooldown Fantasy 1.5 semanas)
+      // Actualizar cada 30 segundos los contadores en vivo (MVP 24h y Cooldown Fantasy 1.5 semanas)
       setInterval(() => {
         if (state.activeSection === 'fantasy') {
           const approvedUsers = state.users.filter(u => u.approved || u.isAdmin);
           renderFantasySection(approvedUsers);
-        }
-        if (state.activeSection === 'partidos') {
-          renderMatchesSection();
-        }
-        if (state.activeMatchId && state.activeMatchSubTab === 'notas') {
-          const openMatch = state.matches.find(m => m.id === state.activeMatchId);
-          if (openMatch) renderMatchDetailContent(openMatch);
         }
       }, 30000);
     };
