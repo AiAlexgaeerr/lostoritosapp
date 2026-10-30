@@ -497,7 +497,7 @@
               Pachangas del Club
             </h3>
           </div>
-          <p class="text-xs text-zinc-400">Confirma asistencia, arma equipos, vota al MVP y pon nota (30m después)</p>
+          <p class="text-xs text-zinc-400">Confirma asistencia, gestiona quién vino o faltó, arma equipos y vota MVP/Notas</p>
         </div>
 
         <div id="upcoming-matches-list" class="space-y-4"></div>
@@ -579,7 +579,6 @@
 
         <!-- Panel Doble: Presupuesto 100M € + Ventana de Traspasos -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Tarjeta de Presupuesto y Límite Salarial 100M € -->
           <div class="card-toro rounded-2xl p-4 border border-emerald-500/35 space-y-2.5">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2.5">
@@ -599,7 +598,6 @@
               </span>
             </div>
 
-            <!-- Barra de progreso de los 100 Millones -->
             <div class="w-full h-2.5 bg-toro-black rounded-full overflow-hidden border border-zinc-800">
               <div id="fantasy-budget-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width: 0%"></div>
             </div>
@@ -608,7 +606,6 @@
             </p>
           </div>
 
-          <!-- Barra de Estado del Mercado de Traspasos (Cooldown 1 Semana y Media) -->
           <div id="fantasy-transfer-banner" class="card-toro rounded-2xl p-4 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-center gap-3">
               <div id="fantasy-market-icon" class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0">
@@ -642,9 +639,7 @@
               </div>
             </div>
 
-            <!-- Terreno de Juego con Formación 5 Jugadores (1-1-2-1) -->
             <div class="tactical-pitch rounded-2xl p-3 sm:p-5 min-h-[480px] flex flex-col justify-between relative">
-              <!-- Líneas reglamentarias SVG de fondo -->
               <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-25" viewBox="0 0 400 500" preserveAspectRatio="none">
                 <rect x="16" y="16" width="368" height="468" fill="none" stroke="#ffffff" stroke-width="2" rx="8"/>
                 <line x1="16" y1="250" x2="384" y2="250" stroke="#ffffff" stroke-width="2"/>
@@ -1115,8 +1110,8 @@
     const FANTASY_TRANSFER_COOLDOWN_MS = 10.5 * 24 * 60 * 60 * 1000;
     const FANTASY_POSITIONS = ['POR', 'DEF', 'MED1', 'MED2', 'DEL'];
     const FANTASY_INITIAL_VALUE = 5.0; // 5 Millones de valor inicial
-    const FANTASY_MIN_VALUE = 3.0;     // Suelo de 3 Millones para que siempre haya opciones económicas
-    const FANTASY_MAX_VALUE = 32.0;    // Techo de 32 Millones para que siempre quepan 5 jugadores en 100M
+    const FANTASY_MIN_VALUE = 3.0;     // Suelo de 3 Millones
+    const FANTASY_MAX_VALUE = 32.0;    // Techo de 32 Millones
     const FANTASY_MAX_BUDGET = 100.0;  // Presupuesto máximo de 100 Millones por equipo
 
     let state = {
@@ -1134,7 +1129,6 @@
       activeFantasyPosition: null
     };
 
-    // Normaliza plantillas antiguas de 4 jugadores (migra MED -> MED1 sin perder el jugador)
     function normalizeFantasyLineup(rawLineup) {
       const base = rawLineup || {};
       const med1Val = base.MED1 !== undefined ? base.MED1 : (base.MED || null);
@@ -1798,7 +1792,6 @@
       return bestId;
     }
 
-    // Determina si un partido ya se ha disputado o tiene actividad registrada
     function hasMatchActivity(match) {
       if (!match) return false;
       const sColor = parseInt(match.scoreColor, 10) || 0;
@@ -1811,12 +1804,10 @@
       return sColor > 0 || sBlanco > 0 || hasGoals || hasVotes || hasRatings || started;
     }
 
-    // Calcula el Valor de Mercado Dinámico (5.0M inicial, mínimo 3.0M, máximo 32.0M) y su última variación
     function computePlayerMarketData(playerId) {
       let currentVal = FANTASY_INITIAL_VALUE;
       let lastDelta = 0;
 
-      // Ordenar los partidos cronológicamente de más antiguo a más reciente
       const chronologicalMatches = [...state.matches].sort((a, b) => {
         const tA = getMatchStartTimestamp(a) || 0;
         const tB = getMatchStartTimestamp(b) || 0;
@@ -1831,7 +1822,6 @@
         let matchDelta = 0;
 
         if (!attended) {
-          // Si no asiste a una pachanga disputada, baja ligeramente por inactividad (-0.5M)
           matchDelta = -0.5;
         } else {
           const pGoals = (m.goals && parseInt(m.goals[playerId], 10)) || 0;
@@ -1842,13 +1832,9 @@
           const scoreBlanco = parseInt(m.scoreBlanco, 10) || 0;
           const matchHasScore = scoreColor > 0 || scoreBlanco > 0;
 
-          // 1. Subida por goles marcados (+1.5M por gol)
           matchDelta += pGoals * 1.5;
-
-          // 2. Subida por ser elegido MVP (+3.0M)
           if (isMvp) matchDelta += 3.0;
 
-          // 3. Resultado colectivo y portería a cero
           if (matchHasScore) {
             if (teamColor.includes(playerId)) {
               if (scoreColor > scoreBlanco) matchDelta += 1.0;
@@ -1861,7 +1847,6 @@
             }
           }
 
-          // 4. Nota individual recibida en ese partido (1-10)
           const rSummary = computeMatchRatingsSummary(m);
           const pRating = rSummary.perPlayer[playerId]?.avg;
           if (pRating !== null && pRating !== undefined) {
@@ -1869,10 +1854,9 @@
             else if (pRating >= 7.0) matchDelta += 1.2;
             else if (pRating >= 6.0) matchDelta += 0.3;
             else if (pRating >= 5.0) matchDelta -= 0.7;
-            else matchDelta -= 1.8; // Nota suspensa (<5) baja fuerte de valor
+            else matchDelta -= 1.8;
           }
 
-          // 5. Penalización por partido discreto (sin goles, sin MVP y sin nota destacada)
           if (pGoals === 0 && !isMvp && (pRating === null || pRating === undefined || pRating < 6.5)) {
             matchDelta -= 1.0;
           }
@@ -2010,7 +1994,6 @@
       return totalFantasy;
     }
 
-    // Calcula el valor total (en Millones) de una alineación Fantasy de 5 jugadores
     function computeLineupTotalValue(lineup, statsMap) {
       const normalized = normalizeFantasyLineup(lineup);
       let sum = 0;
@@ -2058,7 +2041,6 @@
       const remainingCooldownMs = getFantasyRemainingCooldownMs(myLineup);
       const isTransferOnCooldown = remainingCooldownMs > 0;
 
-      // 1. Actualizar Panel de Presupuesto 100M €
       const totalSquadValue = computeLineupTotalValue(myLineup, statsMap);
       const remainingBudget = Number((FANTASY_MAX_BUDGET - totalSquadValue).toFixed(1));
       const filledSlotsCount = FANTASY_POSITIONS.filter(p => Boolean(myLineup[p])).length;
@@ -2102,7 +2084,6 @@
         }
       }
 
-      // 2. Actualizar Banner de Ventana de Traspasos (Cooldown 1 Semana y Media)
       const marketBadge = document.getElementById('fantasy-market-badge');
       const marketDesc = document.getElementById('fantasy-market-desc');
       const marketIcon = document.getElementById('fantasy-market-icon');
@@ -2139,7 +2120,6 @@
         }
       }
 
-      // 3. Renderizar las 5 demarcaciones en el césped táctico
       const posShortLabel = { POR: 'POR', DEF: 'DEF', MED1: 'MED IZQ', MED2: 'MED DER', DEL: 'DEL' };
       FANTASY_POSITIONS.forEach(pos => {
         const slotEl = document.getElementById(`slot-player-${pos}`);
@@ -2191,7 +2171,6 @@
         }
       });
 
-      // 4. Puntos Fantasy Totales del Manager
       let totalManagerFantasyPts = 0;
       FANTASY_POSITIONS.forEach(posKey => {
         const pid = myLineup[posKey];
@@ -2200,7 +2179,6 @@
       const badgePts = document.getElementById('fantasy-total-pts-badge');
       if (badgePts) badgePts.textContent = `${totalManagerFantasyPts} PTS TOTALES`;
 
-      // 5. Tabla Clasificación de Managers Fantasy (Sobre 5 titulares)
       const rankingBody = document.getElementById('fantasy-ranking-body');
       if (rankingBody) {
         const fantasyManagers = approvedUsers.map(u => {
@@ -2253,7 +2231,6 @@
         }).join('');
       }
 
-      // 6. Renderizar Bolsa de Valores en Vivo (Cotización y subidas/bajadas)
       const tickerBody = document.getElementById('fantasy-market-ticker-body');
       if (tickerBody) {
         const marketPlayers = approvedUsers.map(u => statsMap[u.id]).filter(Boolean);
@@ -2296,7 +2273,6 @@
       const remainingCooldownMs = getFantasyRemainingCooldownMs(myLineup);
       const isCooldownBlocked = isReplacement && remainingCooldownMs > 0;
 
-      // Calcular cuánto suman los otros 4 puestos para saber el máximo gastable en esta posición
       let otherSlotsCost = 0;
       FANTASY_POSITIONS.forEach(posKey => {
         if (posKey !== position && myLineup[posKey]) {
@@ -2431,7 +2407,6 @@
         return;
       }
 
-      // Verificar Presupuesto Máximo de 100.0M €
       const statsMap = computeAllPlayersStats();
       let proposedTotal = 0;
       FANTASY_POSITIONS.forEach(posKey => {
@@ -2825,6 +2800,76 @@
       showToast(status === 'going' ? 'Has confirmado tu asistencia ✅' : 'Has indicado que no asistes ❌', 'info');
     };
 
+    // Apuntar manualmente a un miembro de Los Toritos que sí asistió pero olvidó apuntarse
+    window.addMemberWhoAttended = async function(matchId, targetUserId, preferredTeam = null) {
+      const current = getCurrentProfile();
+      const match = state.matches.find(m => m.id === matchId);
+      const targetUser = state.users.find(u => u.id === targetUserId);
+      if (!current || !match || !targetUser) return;
+
+      match.attendance = match.attendance || {};
+      match.attendance[targetUser.id] = 'going';
+      match.teams = match.teams || { color: [], blanco: [] };
+
+      match.teams.color = (match.teams.color || []).filter(id => id !== targetUser.id);
+      match.teams.blanco = (match.teams.blanco || []).filter(id => id !== targetUser.id);
+
+      let chosenTeam = preferredTeam;
+      if (!chosenTeam) {
+        chosenTeam = (match.teams.color.length <= match.teams.blanco.length) ? 'color' : 'blanco';
+      }
+
+      if (chosenTeam === 'color') {
+        match.teams.color.push(targetUser.id);
+      } else {
+        match.teams.blanco.push(targetUser.id);
+      }
+
+      const nowTime = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      match.lastModifiedBy = `${current.username} (Apuntó a ${targetUser.username} que sí asistió a las ${nowTime})`;
+
+      await saveMatchRecord(match);
+      showToast(`${targetUser.username} añadido al Equipo ${chosenTeam === 'color' ? 'de Color' : 'Blanco'} ✅`, 'success');
+    };
+
+    // Quitar de la pachanga a un miembro que puso que iba pero al final no fue
+    window.removeMemberWhoDidNotAttend = async function(matchId, targetPlayerId) {
+      const current = getCurrentProfile();
+      const match = state.matches.find(m => m.id === matchId);
+      if (!current || !match) return;
+
+      const pInfo = getPlayerDisplayInfo(targetPlayerId, match);
+      if (pInfo.isGuest) {
+        await window.removeGuest(matchId, targetPlayerId);
+        return;
+      }
+
+      match.attendance = match.attendance || {};
+      match.attendance[targetPlayerId] = 'not_going';
+
+      // Si tenía goles anotados por error, restarlos del marcador de su equipo y limpiarlos
+      const prevGoals = (match.goals && parseInt(match.goals[targetPlayerId], 10)) || 0;
+      if (prevGoals > 0 && match.teams) {
+        if ((match.teams.color || []).includes(targetPlayerId)) {
+          match.scoreColor = Math.max(0, (parseInt(match.scoreColor, 10) || 0) - prevGoals);
+        } else if ((match.teams.blanco || []).includes(targetPlayerId)) {
+          match.scoreBlanco = Math.max(0, (parseInt(match.scoreBlanco, 10) || 0) - prevGoals);
+        }
+        delete match.goals[targetPlayerId];
+      }
+
+      if (match.teams) {
+        match.teams.color = (match.teams.color || []).filter(id => id !== targetPlayerId);
+        match.teams.blanco = (match.teams.blanco || []).filter(id => id !== targetPlayerId);
+      }
+
+      const nowTime = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      match.lastModifiedBy = `${current.username} (Quitó a ${pInfo.name} porque al final no asistió a las ${nowTime})`;
+
+      await saveMatchRecord(match);
+      showToast(`${pInfo.name} eliminado de la lista de asistentes ❌`, 'info');
+    };
+
     // ==========================================
     // EDITAR Y ELIMINAR PACHANGA
     // ==========================================
@@ -2963,6 +3008,12 @@
           a => !teamColorIds.includes(a.id) && !teamBlancoIds.includes(a.id)
         );
 
+        // Miembros registrados de Los Toritos que NO están apuntados como asistentes ("going")
+        const attendanceMap = match.attendance || {};
+        const missingClubMembers = state.users.filter(
+          u => (u.approved || u.isAdmin) && attendanceMap[u.id] !== 'going'
+        );
+
         let ptsColor = 0;
         teamColorIds.forEach(id => { ptsColor += (statsMap[id]?.points || 0); });
         let ptsBlanco = 0;
@@ -2989,8 +3040,46 @@
             ` : ''}
           </div>
 
+          <!-- Panel para Añadir a Miembros de Los Toritos que Sí Fueron pero Olvidaron Apuntarse -->
+          <div class="p-3.5 rounded-2xl bg-emerald-500/[0.07] border border-emerald-500/30 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 block">
+                  <i class="fa-solid fa-user-plus mr-1"></i>¿Alguien sí ha ido pero se le olvidó apuntarse?
+                </span>
+                <p class="text-[11px] text-zinc-400">Toca su nombre para meterlo directamente en el Equipo de Color o en el Equipo Blanco:</p>
+              </div>
+              <span class="px-2 py-0.5 rounded-lg bg-toro-black border border-zinc-800 text-[10px] font-bold text-zinc-300 shrink-0">
+                ${missingClubMembers.length} sin apuntar
+              </span>
+            </div>
+
+            ${missingClubMembers.length === 0 ? `
+              <p class="text-[11px] text-emerald-300/90 font-semibold">✅ Todos los miembros registrados de Los Toritos están ya apuntados en el partido.</p>
+            ` : `
+              <div class="flex flex-wrap gap-2 pt-0.5">
+                ${missingClubMembers.map(u => {
+                  const safeAv = sanitizeAvatarUrl(u.avatar);
+                  return `
+                    <div class="flex items-center gap-2 bg-toro-black border border-zinc-800 hover:border-emerald-500/50 rounded-xl px-2.5 py-1.5 transition-colors">
+                      <img src="${safeAv}" alt="Avatar" class="w-6 h-6 rounded-full object-cover border border-zinc-700 shrink-0" />
+                      <span class="text-xs font-extrabold text-white">${escapeHtml(u.username)}</span>
+                      <button type="button" onclick="addMemberWhoAttended('${match.id}', '${u.id}', 'color')" title="Añadir al Equipo de Color" class="px-2 py-0.5 rounded-md bg-toro-red hover:bg-toro-bright text-white text-[10px] font-extrabold transition-colors">
+                        + Color
+                      </button>
+                      <button type="button" onclick="addMemberWhoAttended('${match.id}', '${u.id}', 'blanco')" title="Añadir al Equipo Blanco" class="px-2 py-0.5 rounded-md bg-zinc-200 hover:bg-white text-black text-[10px] font-extrabold transition-colors">
+                        + Blanco
+                      </button>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `}
+          </div>
+
+          <!-- Formulario para Invitados Externos (Gente que no pertenece a Los Toritos) -->
           <form onsubmit="handleAddGuest(event, '${match.id}')" class="flex gap-2">
-            <input type="text" id="guest-name-input" required placeholder="Añadir amigo invitado (no miembro)..." class="flex-1 bg-toro-black border border-zinc-800 focus:border-toro-red rounded-xl px-3.5 py-2.5 text-xs text-white outline-none" />
+            <input type="text" id="guest-name-input" required placeholder="Añadir amigo invitado externo (no miembro)..." class="flex-1 bg-toro-black border border-zinc-800 focus:border-toro-red rounded-xl px-3.5 py-2.5 text-xs text-white outline-none" />
             <button type="submit" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-extrabold text-xs uppercase shrink-0">
               + Invitado
             </button>
@@ -3005,6 +3094,9 @@
                     <span class="text-xs font-bold text-white">${escapeHtml(p.name)}</span>
                     <button onclick="assignPlayerToTeam('${match.id}', '${p.id}', 'color')" class="px-2 py-0.5 rounded bg-toro-red text-white text-[10px] font-extrabold">Color</button>
                     <button onclick="assignPlayerToTeam('${match.id}', '${p.id}', 'blanco')" class="px-2 py-0.5 rounded bg-zinc-200 text-black text-[10px] font-extrabold">Blanco</button>
+                    <button onclick="removeMemberWhoDidNotAttend('${match.id}', '${p.id}')" title="Quitar porque al final no asistió" class="px-1.5 py-0.5 rounded bg-rose-950 hover:bg-rose-600 text-rose-300 hover:text-white text-[10px] font-bold">
+                      <i class="fa-solid fa-user-xmark"></i>
+                    </button>
                   </div>
                 `).join('')}
               </div>
@@ -3031,9 +3123,12 @@
                       </div>
                       <div class="flex items-center gap-1 shrink-0">
                         <button onclick="assignPlayerToTeam('${match.id}', '${p.id}', 'blanco')" title="Pasar al Equipo Blanco" class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-200 text-zinc-200 hover:text-black text-[10px] font-extrabold transition-colors">
-                          Pasar a Blanco &rarr;
+                          Blanco &rarr;
                         </button>
-                        ${p.isGuest ? `<button onclick="removeGuest('${match.id}', '${p.id}')" class="w-6 h-6 rounded-lg bg-rose-950 text-rose-400 hover:bg-rose-600 hover:text-white text-[10px]"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                        <button onclick="removeMemberWhoDidNotAttend('${match.id}', '${p.id}')" title="Quitar: puso que iba pero al final NO asistió" class="px-2 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-600 border border-rose-500/30 text-rose-300 hover:text-white text-[10px] font-extrabold transition-colors flex items-center gap-1">
+                          <i class="fa-solid fa-user-xmark"></i>
+                          <span>No vino</span>
+                        </button>
                       </div>
                     </div>
                   `;
@@ -3060,9 +3155,12 @@
                       </div>
                       <div class="flex items-center gap-1 shrink-0">
                         <button onclick="assignPlayerToTeam('${match.id}', '${p.id}', 'color')" title="Pasar al Equipo de Color" class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-toro-red text-zinc-200 hover:text-white text-[10px] font-extrabold transition-colors">
-                          &larr; Pasar a Color
+                          &larr; Color
                         </button>
-                        ${p.isGuest ? `<button onclick="removeGuest('${match.id}', '${p.id}')" class="w-6 h-6 rounded-lg bg-rose-950 text-rose-400 hover:bg-rose-600 hover:text-white text-[10px]"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                        <button onclick="removeMemberWhoDidNotAttend('${match.id}', '${p.id}')" title="Quitar: puso que iba pero al final NO asistió" class="px-2 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-600 border border-rose-500/30 text-rose-300 hover:text-white text-[10px] font-extrabold transition-colors flex items-center gap-1">
+                          <i class="fa-solid fa-user-xmark"></i>
+                          <span>No vino</span>
+                        </button>
                       </div>
                     </div>
                   `;
