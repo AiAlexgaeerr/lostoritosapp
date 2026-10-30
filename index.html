@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" class="dark scroll-smooth">
 <head>
-  <link rel="manifest" href="manifest.json">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#060609" />
@@ -433,7 +432,7 @@
     <main class="flex-1 max-w-5xl w-full mx-auto px-4 pt-5 pb-20 space-y-6">
 
       <!-- ==========================================
-           HERO MATCH CENTER (BROADCAST BANNER)
+           HERO MATCH CENTER (SOLO EN PESTAÑA PARTIDOS)
            ========================================== -->
       <section id="hero-banner" class="relative rounded-3xl overflow-hidden border border-toro-red/40 bg-gradient-to-br from-[#20060b] via-[#101018] to-[#060609] shadow-2xl p-5 sm:p-7">
         <svg class="hero-radar absolute -right-24 -top-24 w-80 h-80 opacity-15 pointer-events-none text-toro-red" viewBox="0 0 200 200" fill="none">
@@ -494,7 +493,7 @@
               Pachangas del Club
             </h3>
           </div>
-          <p class="text-xs text-zinc-400">Confirma asistencia, arma el Equipo de Color vs Equipo Blanco y vota al MVP</p>
+          <p class="text-xs text-zinc-400">Confirma asistencia, arma equipos, vota al MVP y pon nota (30m después)</p>
         </div>
 
         <div id="upcoming-matches-list" class="space-y-4"></div>
@@ -510,18 +509,21 @@
             <h3 class="font-display text-3xl sm:text-4xl uppercase tracking-wider text-white leading-none mt-0.5 flex items-center gap-2">
               <i class="fa-solid fa-trophy text-toro-gold text-2xl"></i> Ranking Los Toritos
             </h3>
-            <p class="text-xs text-zinc-400 mt-1">Puntuación de Nivel para equilibrar equipos: <strong class="text-toro-gold">MVP = 3 pts</strong> • <strong class="text-toro-bright">Gol = 1 pt</strong></p>
+            <p class="text-xs text-zinc-400 mt-1">Puntuación de Nivel para equilibrar equipos: <strong class="text-toro-gold">MVP = 3 pts</strong> • <strong class="text-toro-bright">Gol = 1 pt</strong> • <strong class="text-sky-300">Nota Media × 1.5</strong></p>
           </div>
 
-          <div class="inline-flex p-1 rounded-2xl bg-toro-black border border-zinc-800 self-start">
-            <button type="button" onclick="setRankingSort('pts')" id="rank-filter-pts" class="px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white transition-all shadow">
+          <div class="inline-flex flex-wrap p-1 rounded-2xl bg-toro-black border border-zinc-800 self-start gap-1">
+            <button type="button" onclick="setRankingSort('pts')" id="rank-filter-pts" class="px-3 py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white transition-all shadow">
               Nivel General
             </button>
-            <button type="button" onclick="setRankingSort('goals')" id="rank-filter-goals" class="px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
-              ⚽ Pichichi
+            <button type="button" onclick="setRankingSort('goals')" id="rank-filter-goals" class="px-3 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
+              ⚽ Goleadores
             </button>
-            <button type="button" onclick="setRankingSort('mvps')" id="rank-filter-mvps" class="px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
-              👑 MVPs
+            <button type="button" onclick="setRankingSort('mvps')" id="rank-filter-mvps" class="px-3 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
+              👑 Más MVPs
+            </button>
+            <button type="button" onclick="setRankingSort('rating')" id="rank-filter-rating" class="px-3 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all">
+              ⭐ Mejor Nota
             </button>
           </div>
         </div>
@@ -533,9 +535,10 @@
         <div class="card-toro rounded-3xl overflow-hidden border border-zinc-800">
           <div class="grid grid-cols-12 items-center px-4 py-3.5 bg-toro-black/90 border-b border-zinc-800 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-zinc-400">
             <div class="col-span-1">#</div>
-            <div class="col-span-5">Jugador</div>
+            <div class="col-span-4">Jugador</div>
             <div class="col-span-2 text-center">⚽ Goles</div>
             <div class="col-span-2 text-center">👑 MVPs</div>
+            <div class="col-span-1 text-center">⭐ Nota</div>
             <div class="col-span-2 text-right">Nivel</div>
           </div>
           <div id="ranking-table-body" class="divide-y divide-zinc-800/60"></div>
@@ -686,7 +689,7 @@
           <h3 class="font-display text-3xl sm:text-4xl uppercase tracking-wider text-white leading-none mt-0.5">
             Historial de Resultados
           </h3>
-          <p class="text-xs text-zinc-400 mt-1">Toca cualquier acta de partido para consultar los goleadores, equipos y el ganador del MVP</p>
+          <p class="text-xs text-zinc-400 mt-1">Toca cualquier acta de partido para consultar los goleadores, notas medias y el ganador del MVP</p>
         </div>
 
         <div id="history-matches-list" class="space-y-3.5"></div>
@@ -715,7 +718,7 @@
           <h3 class="font-display text-3xl sm:text-4xl uppercase tracking-wider text-white leading-none mt-0.5 mb-1">
             Plantilla Los Toritos FC
           </h3>
-          <p class="text-xs text-zinc-400 mb-4">Media OVR calculada automáticamente en base a goles marcados, MVPs y partidos jugados</p>
+          <p class="text-xs text-zinc-400 mb-4">Media OVR calculada automáticamente en base a goles marcados, MVPs, nota media y partidos jugados</p>
           <div id="squad-members-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
         </div>
       </section>
@@ -878,7 +881,7 @@
   </div>
 
   <!-- ==========================================
-       MODAL: CENTRO DE PARTIDO (EQUIPOS, GOLES, MVP)
+       MODAL: CENTRO DE PARTIDO (EQUIPOS, GOLES, MVP Y NOTAS)
        ========================================== -->
   <div id="match-detail-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4">
     <div class="card-toro w-full max-w-2xl rounded-3xl border border-zinc-800 shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
@@ -902,14 +905,14 @@
       </div>
 
       <div class="grid grid-cols-3 bg-toro-black border-b border-zinc-800 p-1.5 gap-1.5 shrink-0">
-        <button onclick="switchMatchSubTab('equipos')" id="subtab-btn-equipos" class="py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white">
+        <button onclick="switchMatchSubTab('equipos')" id="subtab-btn-equipos" class="py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white shadow">
           Equipos
         </button>
         <button onclick="switchMatchSubTab('goles')" id="subtab-btn-goles" class="py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white">
           Marcador y Goles
         </button>
         <button onclick="switchMatchSubTab('mvp')" id="subtab-btn-mvp" class="py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white">
-          Votar MVP (24h)
+          MVP &amp; Notas (1-10)
         </button>
       </div>
 
@@ -1052,8 +1055,7 @@
       SESSION_USER_OBJ: 'toritos_fc_session_user_obj_v3',
       USERS_CACHE: 'toritos_fc_users_cache_v3',
       MATCHES_CACHE: 'toritos_fc_matches_cache_v3',
-      FANTASY_CACHE: 'toritos_fc_fantasy_cache_v3',
-      CLEANED_EXAMPLES: 'toritos_fc_cleaned_examples_v3'
+      FANTASY_CACHE: 'toritos_fc_fantasy_cache_v3'
     };
 
     // 1 Semana y Media = 10.5 días = 10 días y 12 horas en milisegundos
@@ -1542,6 +1544,14 @@
       if (state.activeSection === sectionName) return;
       triggerBullTransition(() => {
         state.activeSection = sectionName;
+        const heroBanner = document.getElementById('hero-banner');
+        if (heroBanner) {
+          if (sectionName === 'partidos') {
+            heroBanner.classList.remove('hidden');
+          } else {
+            heroBanner.classList.add('hidden');
+          }
+        }
         const sections = ['partidos', 'ranking', 'fantasy', 'historial', 'plantilla', 'perfil'];
         sections.forEach(s => {
           const secEl = document.getElementById(`section-${s}`);
@@ -1568,8 +1578,84 @@
     };
 
     // ==========================================
-    // CÁLCULO DE ESTADÍSTICAS, MVP Y FANTASY
+    // CÁLCULO DE ESTADÍSTICAS, MVP, NOTAS (30 MIN) Y FANTASY
     // ==========================================
+    function getMatchStartTimestamp(match) {
+      if (!match || !match.date) return NaN;
+      const timePart = match.time || '18:00';
+      return new Date(`${match.date}T${timePart}:00`).getTime();
+    }
+
+    // Se habilita exactamente 30 minutos después de la hora programada de la pachanga
+    function isPlayerRatingsUnlocked(match) {
+      const startMs = getMatchStartTimestamp(match);
+      if (isNaN(startMs)) return false;
+      const unlockMs = startMs + 30 * 60 * 1000;
+      return Date.now() >= unlockMs;
+    }
+
+    function getPlayerRatingsUnlockRemaining(match) {
+      const startMs = getMatchStartTimestamp(match);
+      if (isNaN(startMs)) return '';
+      const unlockMs = startMs + 30 * 60 * 1000;
+      const diff = unlockMs - Date.now();
+      if (diff <= 0) return 'Notas habilitadas';
+      const totalMinutes = Math.ceil(diff / (1000 * 60));
+      const days = Math.floor(totalMinutes / (60 * 24));
+      const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+      const mins = totalMinutes % 60;
+      if (days > 0) return `Notas en ${days}d ${hours}h ${mins}m`;
+      if (hours > 0) return `Notas en ${hours}h ${mins}m`;
+      return `Notas en ${mins} min`;
+    }
+
+    function computeMatchRatingsSummary(match, attendeesList) {
+      const playerRatings = (match && match.playerRatings) || {};
+      const attendees = attendeesList || getMatchAttendeesList(match);
+      const nonGuestAttendees = attendees.filter(a => !a.isGuest);
+
+      const voterIds = Object.keys(playerRatings).filter(vid => {
+        const ballot = playerRatings[vid];
+        return ballot && typeof ballot === 'object' && Object.keys(ballot).length > 0;
+      });
+
+      const expectedVotersCount = Math.max(nonGuestAttendees.length, voterIds.length, 1);
+      const votersCount = voterIds.length;
+      const allVoted = nonGuestAttendees.length > 0 && votersCount >= nonGuestAttendees.length;
+      const progressPct = Math.min(100, Math.round((votersCount / expectedVotersCount) * 100));
+
+      const perPlayer = {};
+      attendees.forEach(p => {
+        perPlayer[p.id] = { sum: 0, count: 0, avg: null };
+      });
+
+      voterIds.forEach(vid => {
+        const ballot = playerRatings[vid] || {};
+        Object.entries(ballot).forEach(([pid, rawScore]) => {
+          const score = Number(rawScore);
+          if (!isNaN(score) && score >= 1 && score <= 10) {
+            if (!perPlayer[pid]) perPlayer[pid] = { sum: 0, count: 0, avg: null };
+            perPlayer[pid].sum += score;
+            perPlayer[pid].count += 1;
+          }
+        });
+      });
+
+      Object.values(perPlayer).forEach(entry => {
+        if (entry.count > 0) {
+          entry.avg = Number((entry.sum / entry.count).toFixed(1));
+        }
+      });
+
+      return {
+        votersCount,
+        expectedVotersCount,
+        allVoted,
+        progressPct,
+        perPlayer
+      };
+    }
+
     function isMvpVotingClosed(match) {
       if (!match || !match.date) return false;
       const timePart = match.time || '18:00';
@@ -1623,6 +1709,10 @@
           goals: 0,
           mvps: 0,
           matchesPlayed: 0,
+          ratingSum: 0,
+          ratingCount: 0,
+          avgRating: 0,
+          ratingBonus: 0,
           points: 0
         };
       });
@@ -1631,6 +1721,7 @@
         const attendance = m.attendance || {};
         const goals = m.goals || {};
         const guests = m.guests || [];
+        const playerRatings = m.playerRatings || {};
 
         guests.forEach(g => {
           if (!statsMap[g.id]) {
@@ -1642,6 +1733,10 @@
               goals: 0,
               mvps: 0,
               matchesPlayed: 0,
+              ratingSum: 0,
+              ratingCount: 0,
+              avgRating: 0,
+              ratingBonus: 0,
               points: 0
             };
           }
@@ -1668,10 +1763,25 @@
         if (winnerId && statsMap[winnerId]) {
           statsMap[winnerId].mvps += 1;
         }
+
+        // Acumular las notas individuales recibidas en este partido
+        Object.values(playerRatings).forEach(ballot => {
+          if (ballot && typeof ballot === 'object') {
+            Object.entries(ballot).forEach(([pid, rawScore]) => {
+              const score = Number(rawScore);
+              if (!isNaN(score) && score >= 1 && score <= 10 && statsMap[pid]) {
+                statsMap[pid].ratingSum += score;
+                statsMap[pid].ratingCount += 1;
+              }
+            });
+          }
+        });
       });
 
       Object.values(statsMap).forEach(st => {
-        st.points = st.mvps * 3 + st.goals * 1;
+        st.avgRating = st.ratingCount > 0 ? Number((st.ratingSum / st.ratingCount).toFixed(1)) : 0;
+        st.ratingBonus = st.ratingCount > 0 ? Math.round(st.avgRating * 1.5) : 0;
+        st.points = st.mvps * 3 + st.goals * 1 + st.ratingBonus;
       });
 
       return statsMap;
@@ -1729,7 +1839,6 @@
       const remainingCooldownMs = getFantasyRemainingCooldownMs(myLineup);
       const isTransferOnCooldown = remainingCooldownMs > 0;
 
-      // Actualizar Banner de Estado del Mercado de Traspasos
       const marketBadge = document.getElementById('fantasy-market-badge');
       const marketDesc = document.getElementById('fantasy-market-desc');
       const marketIcon = document.getElementById('fantasy-market-icon');
@@ -1843,7 +1952,6 @@
         const posBadge = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `${pos}`;
         const safeAv = sanitizeAvatarUrl(m.user.avatar);
 
-        // Mini resumen de los 4 jugadores del manager
         const pickedNames = FANTASY_POSITIONS.map(pk => {
           const pid = m.lineup[pk];
           if (!pid) return null;
@@ -1906,11 +2014,11 @@
       const statsMap = computeAllPlayersStats();
 
       list.innerHTML = approved.map(u => {
-        const stats = statsMap[u.id] || { goals: 0, mvps: 0, points: 0 };
+        const stats = statsMap[u.id] || { goals: 0, mvps: 0, avgRating: 0, points: 0 };
         const fPts = computePlayerFantasyTotalPoints(u.id);
         const safeAv = sanitizeAvatarUrl(u.avatar);
+        const ratingBadge = stats.avgRating > 0 ? `⭐ ${stats.avgRating.toFixed(1)}` : '⭐ S/N';
 
-        // Comprobar si este jugador ya está alineado en esta o en otra posición
         const existingPos = FANTASY_POSITIONS.find(posKey => myLineup[posKey] === u.id);
         const isCurrentInThisSlot = existingPos === position;
         const isAlreadyInOtherSlot = Boolean(existingPos && existingPos !== position);
@@ -1948,7 +2056,7 @@
               <img src="${safeAv}" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-toro-red shrink-0" />
               <div class="truncate">
                 <span class="text-xs font-extrabold text-white block truncate">${escapeHtml(u.username)}</span>
-                <span class="text-[10px] text-zinc-400">⚽ ${stats.goals} Goles • 👑 ${stats.mvps} MVP • <strong class="text-emerald-400">${fPts} pts Fantasy</strong></span>
+                <span class="text-[10px] text-zinc-400">⚽ ${stats.goals} • 👑 ${stats.mvps} • ${ratingBadge} • <strong class="text-emerald-400">${fPts} pts Fantasy</strong></span>
               </div>
             </div>
             ${actionButtonHtml}
@@ -1971,20 +2079,17 @@
 
       let lineup = state.fantasyLineups[current.id] || { POR: null, DEF: null, MED: null, DEL: null, lastTransferAt: null };
 
-      // 1. Verificar que el jugador no esté ya elegido en otra posición de este manager
       const duplicatePos = FANTASY_POSITIONS.find(posKey => posKey !== pos && lineup[posKey] === playerId);
       if (duplicatePos) {
         showToast(`Este jugador ya ocupa la posición de ${duplicatePos}. Debes elegir 1 jugador distinto por puesto.`, 'error');
         return;
       }
 
-      // 2. Si ya está en este mismo puesto, cerrar sin cambios
       if (lineup[pos] === playerId) {
         closeFantasySelector();
         return;
       }
 
-      // 3. Comprobar si es una sustitución (el puesto ya tenía un jugador asignado)
       const isReplacement = Boolean(lineup[pos]);
       if (isReplacement) {
         const remainingCooldown = getFantasyRemainingCooldownMs(lineup);
@@ -2016,6 +2121,13 @@
 
       const approvedUsers = state.users.filter(u => u.approved || u.isAdmin);
       const pendingUsers = state.users.filter(u => !u.approved && !u.isAdmin);
+
+      // Asegurar que el Hero Banner de Programar Pachanga solo aparezca en la pestaña Partidos
+      const heroBanner = document.getElementById('hero-banner');
+      if (heroBanner) {
+        if (state.activeSection === 'partidos') heroBanner.classList.remove('hidden');
+        else heroBanner.classList.add('hidden');
+      }
 
       // Header User Info
       const headerAv = document.getElementById('header-user-avatar');
@@ -2062,6 +2174,15 @@
     }
 
     function renderHeroBanner(approvedUsers) {
+      const heroBanner = document.getElementById('hero-banner');
+      if (heroBanner) {
+        if (state.activeSection === 'partidos') {
+          heroBanner.classList.remove('hidden');
+        } else {
+          heroBanner.classList.add('hidden');
+        }
+      }
+
       const sortedMatches = [...state.matches].sort((a, b) => {
         const dA = new Date(`${a.date}T${a.time || '18:00'}`).getTime() || 0;
         const dB = new Date(`${b.date}T${b.time || '18:00'}`).getTime() || 0;
@@ -2090,7 +2211,7 @@
         const latest = sortedMatches[0];
         if (badgeEl) badgeEl.textContent = 'Próxima Convocatoria';
         if (titleEl) titleEl.textContent = latest.location;
-        if (subEl) subEl.textContent = `Fecha: ${formatDateSpanish(latest.date)} a las ${latest.time || '18:00'}h • Toca la convocatoria para confirmar asistencia y ver el Equipo de Color vs Equipo Blanco.`;
+        if (subEl) subEl.textContent = `Fecha: ${formatDateSpanish(latest.date)} a las ${latest.time || '18:00'}h • Toca la convocatoria para confirmar asistencia, ver equipos, votar MVP y poner notas.`;
       } else {
         if (badgeEl) badgeEl.textContent = 'Matchday Center';
         if (titleEl) titleEl.textContent = 'TEMPORADA OFICIAL ACTIVA';
@@ -2132,6 +2253,25 @@
         avatar: PRESET_AVATARS[0],
         isGuest: false
       };
+    }
+
+    function getMatchAttendeesList(match) {
+      const attendees = [];
+      const attendance = (match && match.attendance) || {};
+      Object.entries(attendance).forEach(([uid, st]) => {
+        if (st === 'going') {
+          attendees.push(getPlayerDisplayInfo(uid, match));
+        }
+      });
+      ((match && match.guests) || []).forEach(g => {
+        attendees.push({
+          id: g.id,
+          name: `${g.name} (Inv.)`,
+          avatar: PRESET_AVATARS[1],
+          isGuest: true
+        });
+      });
+      return attendees;
     }
 
     // ==========================================
@@ -2177,6 +2317,8 @@
         const mvpId = getMatchMvpWinnerId(m);
         const mvpInfo = mvpId ? getPlayerDisplayInfo(mvpId, m) : null;
         const mvpClosed = isMvpVotingClosed(m);
+        const ratingsUnlocked = isPlayerRatingsUnlocked(m);
+        const ratingsSummary = computeMatchRatingsSummary(m);
 
         return `
           <div class="card-toro rounded-3xl p-5 border border-zinc-800/90 space-y-4">
@@ -2191,6 +2333,9 @@
                   </span>
                   <span class="px-2.5 py-0.5 rounded-full ${mvpClosed ? 'bg-amber-500/15 border-amber-500/40 text-amber-300' : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'} border text-[10px] font-bold">
                     👑 ${mvpClosed ? 'MVP Cerrado' : getMatchMvpCloseRemaining(m)}
+                  </span>
+                  <span class="px-2.5 py-0.5 rounded-full ${ratingsUnlocked ? 'bg-sky-500/15 border-sky-500/40 text-sky-300' : 'bg-zinc-900 border-zinc-700 text-zinc-400'} border text-[10px] font-bold">
+                    ⭐ ${ratingsUnlocked ? `Notas Abiertas (${ratingsSummary.votersCount}/${ratingsSummary.expectedVotersCount})` : getPlayerRatingsUnlockRemaining(m)}
                   </span>
                 </div>
                 <h4 class="font-display text-3xl uppercase text-white leading-none">${escapeHtml(m.location)}</h4>
@@ -2232,7 +2377,7 @@
                   </div>
                 ` : ''}
                 <button onclick="openMatchDetailModal('${m.id}')" class="btn-toro flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-gradient-to-r from-toro-red to-toro-bright text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-people-group"></i> Equipos, Goles y MVP
+                  <i class="fa-solid fa-people-group"></i> Equipos, Goles, MVP y Notas
                 </button>
               </div>
             </div>
@@ -2288,6 +2433,7 @@
         scoreColor: 0,
         scoreBlanco: 0,
         mvpVotes: {},
+        playerRatings: {},
         lastModifiedBy: `${current.username} (Creó el partido)`
       };
 
@@ -2407,7 +2553,7 @@
     };
 
     // ==========================================
-    // MODAL DE DETALLE DE PARTIDO (EQUIPOS, GOLES, MVP)
+    // MODAL DE DETALLE DE PARTIDO (EQUIPOS, GOLES, MVP Y NOTAS)
     // ==========================================
     window.openMatchDetailModal = function(matchId) {
       const match = state.matches.find(m => m.id === matchId);
@@ -2442,25 +2588,6 @@
           btn.className = 'py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white';
         }
       });
-    }
-
-    function getMatchAttendeesList(match) {
-      const attendees = [];
-      const attendance = match.attendance || {};
-      Object.entries(attendance).forEach(([uid, st]) => {
-        if (st === 'going') {
-          attendees.push(getPlayerDisplayInfo(uid, match));
-        }
-      });
-      (match.guests || []).forEach(g => {
-        attendees.push({
-          id: g.id,
-          name: `${g.name} (Inv.)`,
-          avatar: PRESET_AVATARS[1],
-          isGuest: true
-        });
-      });
-      return attendees;
     }
 
     function renderMatchDetailContent(match) {
@@ -2659,44 +2786,130 @@
           if (pid) voteCounts[pid] = (voteCounts[pid] || 0) + 1;
         });
 
+        // Estado de la Evaluación Individual (Notas 1-10, 30 min después del partido)
+        const ratingsUnlocked = isPlayerRatingsUnlocked(match);
+        const ratingsRemainingText = getPlayerRatingsUnlockRemaining(match);
+        const ratingsSummary = computeMatchRatingsSummary(match, attendees);
+        const myRatingsBallot = (current && match.playerRatings && match.playerRatings[current.id]) || {};
+
         body.innerHTML = `
-          <div class="p-4 rounded-2xl ${closed ? 'bg-amber-500/10 border-amber-500/40' : 'bg-emerald-500/10 border-emerald-500/40'} border flex items-center justify-between gap-3">
-            <div>
-              <span class="text-[10px] font-extrabold uppercase tracking-wider ${closed ? 'text-amber-300' : 'text-emerald-300'}">
-                ${closed ? '🔒 Votación Cerrada (24h cumplidas)' : '🗳️ Votación Abierta (Cierra 24h después del partido)'}
+          <!-- BLOQUE 1: VOTACIÓN DEL MVP (CIERRA 24H DESPUÉS) -->
+          <div class="space-y-2.5">
+            <div class="p-4 rounded-2xl ${closed ? 'bg-amber-500/10 border-amber-500/40' : 'bg-emerald-500/10 border-emerald-500/40'} border flex items-center justify-between gap-3">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider ${closed ? 'text-amber-300' : 'text-emerald-300'}">
+                  ${closed ? '🔒 Votación Cerrada (24h cumplidas)' : '🗳️ Votación MVP Abierta (Cierra 24h después del partido)'}
+                </span>
+                <h4 class="font-display text-2xl uppercase text-white mt-0.5">
+                  ${winnerInfo ? `MVP Actual: 👑 ${escapeHtml(winnerInfo.name)}` : 'Aún no hay votos registrados'}
+                </h4>
+              </div>
+              <span class="px-3 py-1 rounded-xl bg-toro-black border border-zinc-800 text-xs font-extrabold text-white shrink-0">
+                ${Object.keys(votes).length} votos
               </span>
-              <h4 class="font-display text-2xl uppercase text-white mt-0.5">
-                ${winnerInfo ? `MVP Actual: 👑 ${escapeHtml(winnerInfo.name)}` : 'Aún no hay votos registrados'}
-              </h4>
             </div>
-            <span class="px-3 py-1 rounded-xl bg-toro-black border border-zinc-800 text-xs font-extrabold text-white">
-              ${Object.keys(votes).length} votos
-            </span>
+
+            <div class="space-y-2">
+              ${attendees.length === 0 ? `<p class="text-xs text-zinc-500">Sin asistentes para votar.</p>` : attendees.map(p => {
+                const count = voteCounts[p.id] || 0;
+                const isSelected = myVote === p.id;
+                return `
+                  <div class="p-3 rounded-2xl bg-toro-black border ${isSelected ? 'border-amber-400' : 'border-zinc-800'} flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <img src="${p.avatar}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-amber-500/50 shrink-0" />
+                      <div class="min-w-0">
+                        <span class="text-xs font-extrabold text-white block truncate">${escapeHtml(p.name)}</span>
+                        <span class="text-[10px] text-amber-300 font-bold">👑 ${count} ${count === 1 ? 'voto' : 'votos'}</span>
+                      </div>
+                    </div>
+                    ${closed ? `
+                      <span class="text-[11px] font-bold text-zinc-500 uppercase">${isSelected ? 'Tu voto' : 'Cerrado'}</span>
+                    ` : `
+                      <button onclick="castMvpVote('${match.id}', '${p.id}')" class="btn-toro px-3.5 py-2 rounded-xl ${isSelected ? 'bg-amber-500 text-black' : 'bg-zinc-900 hover:bg-amber-500/20 border border-zinc-700 text-white'} font-extrabold text-xs uppercase">
+                        ${isSelected ? '👑 Votado' : 'Votar MVP'}
+                      </button>
+                    `}
+                  </div>
+                `;
+              }).join('')}
+            </div>
           </div>
 
-          <div class="space-y-2.5">
-            ${attendees.length === 0 ? `<p class="text-xs text-zinc-500">Sin asistentes para votar.</p>` : attendees.map(p => {
-              const count = voteCounts[p.id] || 0;
-              const isSelected = myVote === p.id;
-              return `
-                <div class="p-3 rounded-2xl bg-toro-black border ${isSelected ? 'border-amber-400' : 'border-zinc-800'} flex items-center justify-between gap-3">
-                  <div class="flex items-center gap-3 min-w-0">
-                    <img src="${p.avatar}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-amber-500/50 shrink-0" />
-                    <div class="min-w-0">
-                      <span class="text-xs font-extrabold text-white block truncate">${escapeHtml(p.name)}</span>
-                      <span class="text-[10px] text-amber-300 font-bold">👑 ${count} ${count === 1 ? 'voto' : 'votos'}</span>
-                    </div>
-                  </div>
-                  ${closed ? `
-                    <span class="text-[11px] font-bold text-zinc-500 uppercase">${isSelected ? 'Tu voto' : 'Cerrado'}</span>
-                  ` : `
-                    <button onclick="castMvpVote('${match.id}', '${p.id}')" class="btn-toro px-3.5 py-2 rounded-xl ${isSelected ? 'bg-amber-500 text-black' : 'bg-zinc-900 hover:bg-amber-500/20 border border-zinc-700 text-white'} font-extrabold text-xs uppercase">
-                      ${isSelected ? '👑 Votado' : 'Votar MVP'}
-                    </button>
-                  `}
+          <!-- BLOQUE 2: EVALUACIÓN INDIVIDUAL (NOTAS 1-10, 30 MIN DESPUÉS DEL INICIO) -->
+          <div class="pt-4 border-t border-zinc-800 space-y-3">
+            <div class="p-4 rounded-2xl ${ratingsUnlocked ? 'bg-sky-500/10 border-sky-500/40' : 'bg-zinc-900/90 border-zinc-800'} border space-y-2.5">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span class="text-[10px] font-extrabold uppercase tracking-wider ${ratingsUnlocked ? 'text-sky-300' : 'text-amber-400'}">
+                    ${ratingsUnlocked
+                      ? (ratingsSummary.allVoted ? '✅ Evaluación Completada por Todos los Jugadores' : '⭐ Evaluación Individual Abierta (Notas 1 a 10)')
+                      : `⏳ Bloqueado hasta 30 min después del inicio (${ratingsRemainingText})`}
+                  </span>
+                  <h4 class="font-display text-2xl uppercase text-white leading-none mt-1">
+                    Notas Individuales del Partido
+                  </h4>
+                  <p class="text-[11px] text-zinc-400 mt-0.5">
+                    La nota media recibida por cada jugador se refleja en el Ranking e influye en su posición y nivel general.
+                  </p>
                 </div>
-              `;
-            }).join('')}
+                <div class="px-3 py-1.5 rounded-xl bg-toro-black border border-zinc-800 text-right shrink-0 self-start sm:self-center">
+                  <span class="block text-[9px] font-extrabold uppercase text-zinc-400">Participación</span>
+                  <span class="text-xs font-extrabold text-white tabular-nums">${ratingsSummary.votersCount} de ${ratingsSummary.expectedVotersCount} han votado</span>
+                </div>
+              </div>
+
+              <!-- Barra de progreso de votaciones -->
+              <div class="w-full h-2 bg-toro-black rounded-full overflow-hidden border border-zinc-800">
+                <div class="h-full bg-gradient-to-r from-toro-red via-amber-400 to-emerald-400 transition-all duration-300" style="width: ${ratingsSummary.progressPct}%"></div>
+              </div>
+            </div>
+
+            ${!ratingsUnlocked ? `
+              <div class="p-5 rounded-2xl bg-toro-black border border-zinc-800/90 text-center space-y-1.5">
+                <i class="fa-solid fa-hourglass-half text-amber-400 text-xl"></i>
+                <p class="text-xs font-bold text-white">Las notas individuales se activarán automáticamente 30 minutos después del inicio de la pachanga.</p>
+                <p class="text-[11px] text-zinc-400">Tiempo restante: <strong class="text-amber-300">${escapeHtml(ratingsRemainingText)}</strong></p>
+              </div>
+            ` : (attendees.length === 0 ? `<p class="text-xs text-zinc-500">No hay asistentes registrados en este partido.</p>` : `
+              <div class="space-y-2.5">
+                ${attendees.map(p => {
+                  const pRatingData = ratingsSummary.perPlayer[p.id] || { count: 0, avg: null };
+                  const myScore = myRatingsBallot[p.id] ? Number(myRatingsBallot[p.id]) : null;
+                  const avgLabel = pRatingData.avg !== null ? `⭐ ${pRatingData.avg.toFixed(1)}` : '⭐ S/N';
+                  return `
+                    <div class="p-3.5 rounded-2xl bg-toro-black border ${myScore ? 'border-sky-500/50' : 'border-zinc-800'} space-y-2.5">
+                      <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                          <img src="${p.avatar}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-sky-500/40 shrink-0" />
+                          <div class="min-w-0">
+                            <span class="text-xs font-extrabold text-white block truncate">${escapeHtml(p.name)}</span>
+                            <span class="text-[10px] text-zinc-400">${pRatingData.count} ${pRatingData.count === 1 ? 'valoración recibida' : 'valoraciones recibidas'}</span>
+                          </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                          ${myScore ? `<span class="px-2 py-0.5 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-300 text-[10px] font-extrabold">Tu nota: ${myScore}</span>` : ''}
+                          <span class="px-2.5 py-1 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-extrabold tabular-nums">
+                            ${avgLabel}
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Botones interactivos del 1 al 10 -->
+                      <div class="grid grid-cols-10 gap-1">
+                        ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => {
+                          const active = myScore === num;
+                          return `
+                            <button type="button" onclick="submitPlayerRating('${match.id}', '${p.id}', ${num})" class="py-1.5 rounded-lg text-[11px] font-extrabold transition-all border ${active ? 'bg-toro-red border-toro-bright text-white scale-105 shadow-md shadow-toro-red/40' : 'bg-zinc-900 hover:bg-zinc-800 border-zinc-800 text-zinc-300 hover:text-white'}">
+                              ${num}
+                            </button>
+                          `;
+                        }).join('')}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `)}
           </div>
         `;
       }
@@ -2886,18 +3099,40 @@
       showToast(`Has votado a ${info.name} como MVP 👑`, 'success');
     };
 
+    window.submitPlayerRating = async function(matchId, targetPlayerId, scoreValue) {
+      const current = getCurrentProfile();
+      const match = state.matches.find(m => m.id === matchId);
+      if (!current || !match) return;
+
+      if (!isPlayerRatingsUnlocked(match)) {
+        showToast('Las notas se habilitan 30 minutos después del inicio del partido', 'error');
+        return;
+      }
+
+      const numScore = Number(scoreValue);
+      if (isNaN(numScore) || numScore < 1 || numScore > 10) return;
+
+      match.playerRatings = match.playerRatings || {};
+      match.playerRatings[current.id] = match.playerRatings[current.id] || {};
+      match.playerRatings[current.id][targetPlayerId] = numScore;
+
+      await saveMatchRecord(match);
+      const info = getPlayerDisplayInfo(targetPlayerId, match);
+      showToast(`Nota de ${numScore}/10 guardada para ${info.name} ⭐`, 'success');
+    };
+
     // ==========================================
     // SECCIÓN 2: RANKING OFICIAL LOS TORITOS
     // ==========================================
     window.setRankingSort = function(sortBy) {
       state.rankingSortBy = sortBy;
-      ['pts', 'goals', 'mvps'].forEach(k => {
+      ['pts', 'goals', 'mvps', 'rating'].forEach(k => {
         const btn = document.getElementById(`rank-filter-${k}`);
         if (!btn) return;
         if (k === sortBy) {
-          btn.className = 'px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white transition-all shadow';
+          btn.className = 'px-3 py-2 rounded-xl text-xs font-extrabold uppercase bg-toro-red text-white transition-all shadow';
         } else {
-          btn.className = 'px-3.5 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all';
+          btn.className = 'px-3 py-2 rounded-xl text-xs font-extrabold uppercase text-zinc-400 hover:text-white transition-all';
         }
       });
       renderRankingSection();
@@ -2914,7 +3149,8 @@
       playersList.sort((a, b) => {
         if (state.rankingSortBy === 'goals') return b.goals - a.goals || b.points - a.points;
         if (state.rankingSortBy === 'mvps') return b.mvps - a.mvps || b.points - a.points;
-        return b.points - a.points || b.goals - a.goals;
+        if (state.rankingSortBy === 'rating') return b.avgRating - a.avgRating || b.points - a.points;
+        return b.points - a.points || b.avgRating - a.avgRating || b.goals - a.goals;
       });
 
       const top3 = [playersList[1], playersList[0], playersList[2]];
@@ -2929,12 +3165,13 @@
         if (!p) {
           return `<div class="card-toro rounded-2xl p-3 text-center opacity-40 border border-zinc-800"><span class="text-xs text-zinc-500">Vacante</span></div>`;
         }
+        const avgText = p.avgRating > 0 ? p.avgRating.toFixed(1) : '-';
         return `
           <div class="card-toro rounded-3xl p-3.5 text-center border ${cfg.border} flex flex-col items-center justify-end">
             <span class="text-xl mb-1">${cfg.medal}</span>
             <img src="${p.avatar}" alt="${escapeHtml(p.name)}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-toro-red mb-2 shadow-lg" />
             <span class="text-xs font-extrabold text-white truncate max-w-full">${escapeHtml(p.name)}</span>
-            <span class="text-[10px] text-zinc-400 mt-0.5">⚽ ${p.goals} • 👑 ${p.mvps}</span>
+            <span class="text-[10px] text-zinc-400 mt-0.5">⚽ ${p.goals} • 👑 ${p.mvps} • ⭐ ${avgText}</span>
             <span class="mt-2 px-2.5 py-0.5 rounded-full bg-toro-red/20 border border-toro-red/40 text-toro-bright text-[10px] font-extrabold tabular-nums">
               ${p.points} PTS
             </span>
@@ -2942,18 +3179,22 @@
         `;
       }).join('');
 
-      tableBody.innerHTML = playersList.map((p, idx) => `
-        <div class="grid grid-cols-12 items-center px-4 py-3 hover:bg-white/[0.02] transition-colors">
-          <div class="col-span-1 font-extrabold text-xs text-zinc-400">${idx + 1}</div>
-          <div class="col-span-5 flex items-center gap-2.5 min-w-0">
-            <img src="${p.avatar}" alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-zinc-700 shrink-0" />
-            <span class="text-xs font-extrabold text-white truncate">${escapeHtml(p.name)}</span>
+      tableBody.innerHTML = playersList.map((p, idx) => {
+        const avgText = p.avgRating > 0 ? p.avgRating.toFixed(1) : '-';
+        return `
+          <div class="grid grid-cols-12 items-center px-4 py-3 hover:bg-white/[0.02] transition-colors">
+            <div class="col-span-1 font-extrabold text-xs text-zinc-400">${idx + 1}</div>
+            <div class="col-span-4 flex items-center gap-2.5 min-w-0">
+              <img src="${p.avatar}" alt="Avatar" class="w-8 h-8 rounded-full object-cover border border-zinc-700 shrink-0" />
+              <span class="text-xs font-extrabold text-white truncate">${escapeHtml(p.name)}</span>
+            </div>
+            <div class="col-span-2 text-center font-bold text-xs text-emerald-400 tabular-nums">${p.goals}</div>
+            <div class="col-span-2 text-center font-bold text-xs text-amber-300 tabular-nums">${p.mvps}</div>
+            <div class="col-span-1 text-center font-extrabold text-xs text-sky-300 tabular-nums">${avgText}</div>
+            <div class="col-span-2 text-right font-extrabold text-xs text-toro-bright tabular-nums">${p.points} pts</div>
           </div>
-          <div class="col-span-2 text-center font-bold text-xs text-emerald-400 tabular-nums">${p.goals}</div>
-          <div class="col-span-2 text-center font-bold text-xs text-amber-300 tabular-nums">${p.mvps}</div>
-          <div class="col-span-2 text-right font-extrabold text-xs text-toro-bright tabular-nums">${p.points} pts</div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // ==========================================
@@ -2979,6 +3220,25 @@
         const sBlanco = m.scoreBlanco || 0;
         const mvpId = getMatchMvpWinnerId(m);
         const mvpInfo = mvpId ? getPlayerDisplayInfo(mvpId, m) : null;
+        const ratingsSummary = computeMatchRatingsSummary(m);
+
+        let topRatedBadge = '';
+        let bestRatedId = null;
+        let bestRatedAvg = 0;
+        Object.entries(ratingsSummary.perPlayer).forEach(([pid, rData]) => {
+          if (rData.avg !== null && rData.avg > bestRatedAvg) {
+            bestRatedAvg = rData.avg;
+            bestRatedId = pid;
+          }
+        });
+        if (bestRatedId) {
+          const bestInfo = getPlayerDisplayInfo(bestRatedId, m);
+          topRatedBadge = `
+            <span class="px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/40 text-sky-300 font-bold">
+              ⭐ Mejor Nota: ${escapeHtml(bestInfo.name)} (${bestRatedAvg.toFixed(1)})
+            </span>
+          `;
+        }
 
         const scorers = Object.entries(m.goals || {})
           .filter(([, count]) => (parseInt(count, 10) || 0) > 0)
@@ -3006,11 +3266,14 @@
                 <i class="fa-solid fa-futbol text-emerald-400 mr-1"></i>
                 ${scorers.length > 0 ? scorers.join(', ') : '<span class="text-zinc-500">Sin goles registrados</span>'}
               </div>
-              ${mvpInfo ? `
-                <span class="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold">
-                  👑 MVP: ${escapeHtml(mvpInfo.name)}
-                </span>
-              ` : ''}
+              <div class="flex flex-wrap items-center gap-1.5">
+                ${topRatedBadge}
+                ${mvpInfo ? `
+                  <span class="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold">
+                    👑 MVP: ${escapeHtml(mvpInfo.name)}
+                  </span>
+                ` : ''}
+              </div>
             </div>
           </div>
         `;
@@ -3061,8 +3324,10 @@
       const statsMap = computeAllPlayersStats();
 
       squadGrid.innerHTML = approvedUsers.map(u => {
-        const st = statsMap[u.id] || { goals: 0, mvps: 0, matchesPlayed: 0, points: 0 };
-        const ovr = Math.min(99, 75 + st.goals * 2 + st.mvps * 4 + st.matchesPlayed);
+        const st = statsMap[u.id] || { goals: 0, mvps: 0, matchesPlayed: 0, avgRating: 0, points: 0 };
+        const ratingBoost = st.avgRating > 0 ? Math.round(st.avgRating) : 0;
+        const ovr = Math.min(99, 75 + st.goals * 2 + st.mvps * 4 + st.matchesPlayed + ratingBoost);
+        const avgText = st.avgRating > 0 ? st.avgRating.toFixed(1) : '-';
         return `
           <div class="fut-card rounded-3xl p-4 flex items-center gap-4">
             <div class="text-center shrink-0">
@@ -3075,7 +3340,7 @@
                 <h4 class="font-display text-2xl uppercase text-white truncate leading-none">${escapeHtml(u.username)}</h4>
                 ${u.isAdmin ? `<span class="px-2 py-0.5 rounded bg-toro-red/25 text-toro-bright text-[9px] font-extrabold uppercase">Admin</span>` : ''}
               </div>
-              <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-white/10 text-center">
+              <div class="grid grid-cols-4 gap-1.5 mt-3 pt-2.5 border-t border-white/10 text-center">
                 <div>
                   <span class="block text-[9px] font-bold uppercase text-zinc-400">Partidos</span>
                   <span class="font-display text-xl text-white">${st.matchesPlayed}</span>
@@ -3087,6 +3352,10 @@
                 <div>
                   <span class="block text-[9px] font-bold uppercase text-zinc-400">MVPs</span>
                   <span class="font-display text-xl text-amber-300">${st.mvps}</span>
+                </div>
+                <div>
+                  <span class="block text-[9px] font-bold uppercase text-zinc-400">Nota</span>
+                  <span class="font-display text-xl text-sky-300">${avgText}</span>
                 </div>
               </div>
             </div>
@@ -3236,11 +3505,20 @@
 
     window.onload = function() {
       initApp();
-      // Actualizar cada 30 segundos los contadores en vivo (MVP 24h y Cooldown Fantasy 1.5 semanas)
+      // Actualizar cada 30 segundos los contadores en vivo (MVP 24h, Notas 30m y Cooldown Fantasy 1.5 semanas)
       setInterval(() => {
         if (state.activeSection === 'fantasy') {
           const approvedUsers = state.users.filter(u => u.approved || u.isAdmin);
           renderFantasySection(approvedUsers);
+        }
+        if (state.activeSection === 'partidos') {
+          renderMatchesSection();
+        }
+        if (state.activeMatchId) {
+          const openMatch = state.matches.find(m => m.id === state.activeMatchId);
+          if (openMatch && state.activeMatchSubTab === 'mvp') {
+            renderMatchDetailContent(openMatch);
+          }
         }
       }, 30000);
     };
